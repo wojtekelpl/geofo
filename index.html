@@ -1,0 +1,2006 @@
+<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="GeoFo 2.3.1: mapy topograficzne, kartograficzne i dokładne (Mapy.com), atlas krajów z ludnością, słowniczek, quizy i gry geograficzne oraz czat AI o geografii."><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>GeoFo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: atlas index rail on the left (bottom tab bar on phones); each tab fills the viewport; maps are full-bleed canvases with floating cards; start page pairs a live 3D globe with the country of the day. */
+:root {
+  --paper: #edf2f0; --surface: #ffffff; --sunk: #f5f8f7; --ink: #12211b; --muted: #55655e; --line: #d2dcd7;
+  --accent: #0b6a58; --accent-2: #d0782a; --accent-soft: #d5eae3; --on-accent: #ffffff;
+  --rail: #0e2821; --rail-ink: #d9e8e1; --rail-active: #1d4a3e;
+  --easy: #2a7f4f; --mid: #b06d0b; --hard: #a83444; --good: #22804a; --bad: #b8323f; --gold: #c99a18;
+  --ocean: #b6d4e2; --ocean-2: #8fbcd2; --land: #f6f3e8; --border: #5c6b65; --label: #1b2923; --halo: rgba(255,255,255,.88);
+  --water: #5f9fc2; --city: #1b2923; --coast: #4f8db0; --sea-label: #2e6b93; --relief-label: #7a5634; --peak: #3a2a1a;
+  --shadow: 0 10px 30px rgba(16, 40, 33, .14);
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #0c1512; --surface: #15211d; --sunk: #101a17; --ink: #e1eae5; --muted: #93a39b; --line: #26342e;
+  --accent: #3dbb9b; --accent-2: #eb9a4e; --accent-soft: #163a30; --on-accent: #05211a;
+  --rail: #07100d; --rail-ink: #cde0d7; --rail-active: #173a31;
+  --easy: #4cc37f; --mid: #e3a23c; --hard: #ef6b7d; --good: #3fae6b; --bad: #e0596a; --gold: #e8c04a;
+  --ocean: #12303d; --ocean-2: #0b2230; --land: #2a3933; --border: #9db0a7; --label: #eef4f0; --halo: rgba(0,0,0,.72);
+  --water: #3f86ad; --city: #f2f6f4; --coast: #6fb3d8; --sea-label: #8cc6ea; --relief-label: #d8b78f; --peak: #f3e6d6; --shadow: 0 10px 30px rgba(0,0,0,.45);
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --paper: #0c1512; --surface: #15211d; --sunk: #101a17; --ink: #e1eae5; --muted: #93a39b; --line: #26342e;
+  --accent: #3dbb9b; --accent-2: #eb9a4e; --accent-soft: #163a30; --on-accent: #05211a;
+  --rail: #07100d; --rail-ink: #cde0d7; --rail-active: #173a31;
+  --easy: #4cc37f; --mid: #e3a23c; --hard: #ef6b7d; --good: #3fae6b; --bad: #e0596a; --gold: #e8c04a;
+  --ocean: #12303d; --ocean-2: #0b2230; --land: #2a3933; --border: #9db0a7; --label: #eef4f0; --halo: rgba(0,0,0,.72);
+  --water: #3f86ad; --city: #f2f6f4; --coast: #6fb3d8; --sea-label: #8cc6ea; --relief-label: #d8b78f; --peak: #f3e6d6; --shadow: 0 10px 30px rgba(0,0,0,.45);
+  color-scheme: dark; }
+
+html, body { height: 100%; }
+[hidden] { display: none !important; }
+body { background: var(--paper); color: var(--ink); font: 16px/1.55 var(--f-body); }
+* { box-sizing: border-box; }
+h1, h2, h3, h4 { font-family: var(--f-display); line-height: 1.1; text-wrap: balance; margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.lead { color: var(--muted); font-size: 18px; max-width: 60ch; margin: 0; }
+.note { font-size: 14px; color: var(--muted); }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+img.flag { display: inline-block; vertical-align: middle; border-radius: 3px; box-shadow: 0 0 0 1px rgba(0,0,0,.12); background: var(--line); object-fit: cover; aspect-ratio: 4 / 3; }
+
+/* App shell */
+.app { display: grid; grid-template-columns: 228px 1fr; height: 100%; }
+.rail { background: var(--rail); color: var(--rail-ink); display: flex; flex-direction: column; padding: 20px 12px; gap: 4px; min-height: 0; }
+.brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 16px; text-decoration: none; color: inherit; }
+.brand b { font-family: var(--f-display); font-weight: 800; font-size: 28px; letter-spacing: -.02em; display: block; line-height: 1; }
+.brand small { font-family: var(--f-mono); font-size: 11px; opacity: .6; }
+.rail .label { font-size: 11px; text-transform: uppercase; letter-spacing: .12em; opacity: .55; padding: 4px 10px; }
+.rail a.tab { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; color: inherit; text-decoration: none; font-weight: 700; font-size: 15px; }
+.rail a.tab svg { flex: none; opacity: .85; }
+.rail a.tab .short { display: none; }
+.rail a.tab:hover { background: rgba(255,255,255,.06); }
+.rail a.tab[aria-current="page"] { background: var(--rail-active); box-shadow: inset 3px 0 0 var(--accent); }
+.player { margin-top: auto; padding: 12px 10px 4px; border-top: 1px solid rgba(255,255,255,.08); display: grid; gap: 6px; font-size: 13px; }
+.player .lvl { display: flex; justify-content: space-between; font-family: var(--f-mono); }
+.player .xpbar { height: 6px; border-radius: 6px; background: rgba(255,255,255,.12); overflow: hidden; }
+.player .xpbar i { display: block; height: 100%; background: var(--accent-2); width: 0; transition: width .4s; }
+.player .badges-mini { opacity: .7; }
+main { min-width: 0; min-height: 0; overflow: auto; position: relative; }
+section.view { min-height: 100%; }
+.pad { padding-inline: clamp(16px, 4vw, 52px); padding-block: 34px 48px; max-width: 1180px; }
+.page-h { font-size: clamp(30px, 4.4vw, 46px); margin: 6px 0 10px; letter-spacing: -.02em; }
+
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 99px; padding: 9px 16px; cursor: pointer; font-weight: 700; display: inline-flex; gap: 8px; align-items: center; text-decoration: none; color: inherit; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.btn.small { padding: 5px 12px; font-size: 14px; }
+.btn:disabled { opacity: .5; cursor: default; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+select, input[type=search], input[type=text] { border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; background: var(--surface); min-width: 0; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: clamp(16px, 2.6vw, 26px); }
+
+/* Start */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(16px, 3vw, 40px); align-items: center; }
+.hero h1 { font-size: clamp(38px, 5.6vw, 70px); letter-spacing: -.035em; margin: 8px 0 16px; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.globe-wrap { position: relative; aspect-ratio: 1; max-width: 560px; width: 100%; justify-self: center; }
+.globe-wrap canvas { width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
+.globe-wrap canvas:active { cursor: grabbing; }
+.globe-tip { position: absolute; left: 50%; bottom: 4%; transform: translateX(-50%); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; box-shadow: var(--shadow); display: flex; gap: 10px; align-items: center; white-space: nowrap; font-size: 14px; max-width: 100%; }
+.globe-hint { position: absolute; top: 2%; right: 0; font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.stats { display: flex; flex-wrap: wrap; gap: 8px 26px; margin-top: 26px; font-family: var(--f-mono); font-size: 13px; color: var(--muted); }
+.stats b { color: var(--ink); font-size: 20px; display: block; font-family: var(--f-display); }
+.daily { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 18px; align-items: center; margin-top: 30px; }
+.daily img.flag { width: 96px; }
+.daily h3 { font-size: 26px; }
+.daily .facts { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 14px; color: var(--muted); margin-top: 4px; }
+.daily .facts b { color: var(--ink); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-top: 22px; }
+.tile { display: grid; grid-template-rows: 104px auto; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--surface); color: inherit; text-decoration: none; transition: transform .15s, border-color .15s; }
+.tile:hover { transform: translateY(-2px); border-color: var(--accent); }
+.tile .pic { background-size: cover; background-position: center; }
+.tile .txt { padding: 12px 14px 14px; display: grid; gap: 3px; }
+.tile h3 { font-size: 19px; } .tile p { margin: 0; color: var(--muted); font-size: 14px; }
+.pic.games { background: linear-gradient(135deg, var(--easy) 0 33%, var(--mid) 33% 66%, var(--hard) 66%); display: grid; place-items: center; color: #fff; font: 800 40px var(--f-display); }
+.pic.chat { background: var(--accent-soft); display: grid; place-items: center; }
+.pic.atlas { background: var(--sunk); display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; padding: 10px; align-content: center; }
+.pic.atlas img { width: 100%; }
+
+/* Maps */
+.mapview { position: relative; height: 100%; min-height: 440px; background: var(--ocean); overflow: hidden; }
+.mapview canvas { display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+.mapview canvas.measuring { cursor: crosshair; }
+.panel { position: absolute; top: 14px; left: 14px; width: min(320px, calc(100% - 28px)); background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 12px; box-shadow: var(--shadow); max-height: calc(100% - 28px); overflow: auto; }
+.panel h2 { font-size: 21px; }
+.phead { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.panel .toggle { display: none; }
+.seg { display: grid; gap: 6px; }
+.seg button { text-align: left; border: 1px solid var(--line); background: transparent; border-radius: 9px; padding: 7px 10px; cursor: pointer; display: flex; gap: 10px; align-items: center; font-size: 15px; }
+.seg button .sw { width: 28px; height: 19px; border-radius: 4px; flex: none; background-size: cover; border: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); font-weight: 700; }
+.checks { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; font-size: 14px; }
+.checks label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
+.findbox { position: relative; }
+.findbox input { width: 100%; background: var(--sunk); }
+.sugg { position: absolute; left: 0; right: 0; top: calc(100% + 4px); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); z-index: 5; max-height: 260px; overflow: auto; }
+.sugg button { display: flex; width: 100%; gap: 10px; align-items: center; text-align: left; border: 0; background: transparent; padding: 8px 10px; cursor: pointer; font-size: 14px; }
+.sugg button:hover, .sugg button.on { background: var(--accent-soft); }
+.sugg small { color: var(--muted); margin-left: auto; }
+.measure-out { font-family: var(--f-mono); font-size: 13px; background: var(--accent-soft); border-radius: 8px; padding: 6px 10px; }
+.coords { position: absolute; right: 14px; bottom: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 5px 10px; font: 12px var(--f-mono); font-variant-numeric: tabular-nums; max-width: calc(100% - 28px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.zoom { position: absolute; right: 14px; top: 14px; display: grid; gap: 6px; }
+.zoom button { width: 38px; height: 38px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); font-size: 19px; cursor: pointer; display: grid; place-items: center; }
+.scalebar { position: absolute; left: 14px; bottom: 14px; font: 11px var(--f-mono); color: var(--label); display: grid; gap: 2px; }
+.scalebar i { display: block; height: 5px; border: 1.5px solid var(--label); border-top: 0; }
+.legend { display: grid; gap: 4px; font-size: 12px; color: var(--muted); }
+.legend .ramp { height: 10px; border-radius: 5px; background: linear-gradient(90deg, #0a2a8c, #1f5fd0, #59a9e6, #a9dcef, #3f9a4a, #9cc56a, #dcc58a, #a77b45, #7a5240, #f2f2f2); }
+.legend .ends { display: flex; justify-content: space-between; }
+.info { position: absolute; right: 14px; bottom: 46px; width: min(340px, calc(100% - 28px)); background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 10px; box-shadow: var(--shadow); max-height: calc(100% - 120px); overflow: auto; }
+.info .head { display: flex; gap: 12px; align-items: center; padding-right: 22px; }
+.info .head img.flag { width: 58px; }
+.info h3 { font-size: 22px; }
+.info dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; margin: 0; font-size: 14px; }
+.info dt { color: var(--muted); } .info dd { margin: 0; min-width: 0; }
+.chipset { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip { border: 1px solid var(--line); background: var(--sunk); border-radius: 99px; padding: 2px 10px 2px 4px; font-size: 13px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.chip img.flag { width: 18px; border-radius: 99px; aspect-ratio: 1; }
+.chip:hover { border-color: var(--accent); }
+.info .close { position: absolute; top: 8px; right: 8px; border: 0; background: transparent; font-size: 22px; cursor: pointer; color: var(--muted); line-height: 1; }
+
+/* Atlas */
+.atlas-tools { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 14px; }
+.atlas-tools input { flex: 1 1 220px; }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); position: sticky; top: 0; background: var(--surface); cursor: pointer; user-select: none; }
+th[aria-sort] { color: var(--accent); }
+td.num { text-align: right; font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+th.num { text-align: right; }
+tbody tr { cursor: pointer; }
+tbody tr:hover { background: var(--accent-soft); }
+td .nm { display: flex; gap: 10px; align-items: center; font-weight: 700; }
+td img.flag { width: 28px; }
+.cmpbox { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 22px; }
+.cmp { display: grid; gap: 8px; }
+.cmp .head { display: flex; gap: 10px; align-items: center; }
+.cmp .head img.flag { width: 48px; }
+.cmp-rows { display: grid; gap: 8px; margin-top: 14px; }
+.cmp-row { display: grid; grid-template-columns: minmax(0, 1fr) 120px minmax(0, 1fr); gap: 10px; align-items: center; font-size: 14px; }
+.cmp-row .bar { height: 10px; border-radius: 6px; background: var(--line); overflow: hidden; display: flex; }
+.cmp-row .bar.l { justify-content: flex-end; }
+.cmp-row .bar i { display: block; height: 100%; background: var(--accent); }
+.cmp-row .bar.r i { background: var(--accent-2); }
+.cmp-row .lbl { text-align: center; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.cmp-row .v { font-family: var(--f-mono); font-size: 13px; }
+
+/* Games */
+.modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 22px 0 18px; }
+.mode { text-align: left; border: 2px solid var(--line); background: var(--surface); border-radius: 16px; padding: 16px; cursor: pointer; display: grid; gap: 6px; align-content: start; }
+.mode svg { color: var(--accent); }
+.mode b { font: 700 20px var(--f-display); }
+.mode span { font-size: 14px; color: var(--muted); }
+.mode .best { font-family: var(--f-mono); font-size: 12px; color: var(--accent-2); }
+.mode[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.levels { display: flex; flex-wrap: wrap; gap: 8px; }
+.lvlbtn { border: 2px solid var(--line); background: var(--surface); border-radius: 99px; padding: 7px 14px; cursor: pointer; font-weight: 700; }
+.lvlbtn[data-l="latwe"] { color: var(--easy); } .lvlbtn[data-l="srednie"] { color: var(--mid); } .lvlbtn[data-l="trudne"] { color: var(--hard); }
+.lvlbtn[aria-pressed="true"][data-l="latwe"] { background: var(--easy); border-color: var(--easy); color: #fff; }
+.lvlbtn[aria-pressed="true"][data-l="srednie"] { background: var(--mid); border-color: var(--mid); color: #fff; }
+.lvlbtn[aria-pressed="true"][data-l="trudne"] { background: var(--hard); border-color: var(--hard); color: #fff; }
+.setup { display: grid; gap: 12px; }
+.stage { margin-top: 20px; }
+.qtop { display: flex; justify-content: space-between; gap: 10px; font-family: var(--f-mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; flex-wrap: wrap; }
+.pbar { height: 6px; background: var(--line); border-radius: 9px; overflow: hidden; margin: 10px 0 18px; }
+.pbar i { display: block; height: 100%; background: var(--accent); transition: width .3s; }
+.pbar.timer i { background: var(--accent-2); transition: width .25s linear; }
+.qcat { font-family: var(--f-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); }
+.qtext { font-size: clamp(21px, 2.6vw, 28px); margin: 6px 0 20px; }
+.qtext img.flag { width: min(220px, 60vw); display: block; margin-top: 14px; border-radius: 6px; }
+.bigflag { width: min(220px, 60vw); border-radius: 8px; display: block; margin: 6px 0 20px; }
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--line); background: var(--sunk); border-radius: 12px; padding: 13px 16px; cursor: pointer; font-size: 18px; display: flex; gap: 12px; align-items: center; min-width: 0; }
+.opt img.flag { width: 84px; }
+.opt kbd { font: 600 12px var(--f-mono); border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px; color: var(--muted); flex: none; }
+.opt:not(:disabled):hover { border-color: var(--accent); }
+.opt.good { background: var(--good); border-color: var(--good); color: #fff; } .opt.good kbd { color: #fff; border-color: rgba(255,255,255,.5); }
+.opt.bad { background: var(--bad); border-color: var(--bad); color: #fff; } .opt.bad kbd { color: #fff; border-color: rgba(255,255,255,.5); }
+.opt:disabled { cursor: default; }
+.qfoot { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; gap: 10px; flex-wrap: wrap; min-height: 42px; }
+.result { text-align: center; display: grid; gap: 10px; justify-items: center; }
+.big { font: 800 64px var(--f-display); letter-spacing: -.03em; line-height: 1; }
+.xpgain { font-family: var(--f-mono); color: var(--accent-2); font-weight: 600; }
+.combo { color: var(--accent-2); font-weight: 700; }
+.mapgame { display: grid; grid-template-rows: auto 1fr; height: min(72vh, 640px); min-height: 420px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--surface); }
+.mapgame .bar-top { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+.mapgame .target { font: 700 22px var(--f-display); display: flex; gap: 10px; align-items: center; }
+.mapgame .target img.flag { width: 40px; }
+.mapgame .mapview { min-height: 0; }
+.badges { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 12px; }
+.badge { border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: grid; gap: 4px; justify-items: center; text-align: center; background: var(--surface); }
+.badge .medal { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; background: var(--line); color: var(--muted); }
+.badge.on .medal { background: var(--gold); color: #3b2a00; }
+.badge b { font-size: 14px; } .badge span { font-size: 12px; color: var(--muted); }
+.badge:not(.on) { opacity: .6; }
+h2.sec { font-size: 24px; margin-top: 34px; }
+
+/* Chat */
+.chat { display: grid; grid-template-rows: auto 1fr auto; height: 100%; max-width: 920px; padding-inline: clamp(16px, 4vw, 40px); padding-block: 26px 16px; gap: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips button { border: 1px solid var(--line); background: var(--surface); border-radius: 99px; padding: 6px 12px; font-size: 14px; cursor: pointer; text-align: left; }
+.chips button:hover { border-color: var(--accent); }
+.log { overflow-y: auto; display: flex; flex-direction: column; gap: 12px; min-height: 0; padding-right: 4px; }
+.msg { max-width: 85%; padding: 12px 16px; border-radius: 16px; min-width: 0; overflow-wrap: anywhere; }
+.msg.user { align-self: flex-end; background: var(--accent); color: var(--on-accent); border-bottom-right-radius: 4px; white-space: pre-wrap; }
+.msg.bot { align-self: flex-start; background: var(--surface); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+.msg.bot p { margin: 0 0 .6em; } .msg.bot p:last-child { margin: 0; }
+.msg.bot ul, .msg.bot ol { margin: .2em 0 .6em; padding-left: 1.3em; }
+.msg.bot h4 { margin: .5em 0 .3em; font-size: 17px; }
+.msg.bot .onmap { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); display: grid; gap: 6px; }
+.msg.wait { color: var(--muted); font-style: italic; }
+.empty { color: var(--muted); margin: auto; text-align: center; max-width: 46ch; display: grid; gap: 10px; justify-items: center; }
+form.ask { display: flex; gap: 10px; align-items: flex-end; }
+form.ask textarea { flex: 1; min-width: 0; resize: none; border: 1px solid var(--line); border-radius: 12px; padding: 11px 13px; background: var(--surface); }
+.levelpick { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; font-size: 14px; }
+.levelpick button { border: 1px solid var(--line); background: var(--surface); border-radius: 99px; padding: 3px 11px; cursor: pointer; font-size: 13px; }
+.levelpick button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--rail); color: var(--rail-ink); padding: 12px 18px; border-radius: 14px; box-shadow: var(--shadow); display: flex; gap: 12px; align-items: center; z-index: 100; max-width: calc(100% - 32px); }
+.toast .medal { width: 34px; height: 34px; border-radius: 50%; background: var(--gold); color: #3b2a00; display: grid; place-items: center; flex: none; }
+
+.ver { font-family: var(--f-mono); font-size: 10px; background: rgba(255,255,255,.1); border-radius: 99px; padding: 1px 7px; margin-left: 4px; vertical-align: 2px; }
+.themebtn { border: 1px solid rgba(255,255,255,.18); background: transparent; color: inherit; border-radius: 99px; padding: 4px 10px; font-size: 12px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; justify-self: start; }
+.news { margin-top: 18px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 18px; align-items: start; }
+.news .tag { font-family: var(--f-mono); font-size: 12px; background: var(--accent); color: var(--on-accent); border-radius: 8px; padding: 6px 10px; text-align: center; line-height: 1.3; }
+.news ul { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; font-size: 15px; }
+.news ul b { font-weight: 700; }
+.challenge { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 16px; align-items: center; margin-top: 14px; background: linear-gradient(90deg, var(--accent-soft), var(--surface)); }
+.challenge .ico { width: 52px; height: 52px; border-radius: 14px; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; }
+.streak { font-family: var(--f-mono); font-size: 13px; color: var(--accent-2); font-weight: 600; }
+.hl { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: stretch; }
+.hl .side { border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 8px; justify-items: center; text-align: center; background: var(--sunk); align-content: center; }
+.hl .side img.flag { width: 96px; }
+.hl .side h3 { font-size: 24px; }
+.hl .area { font-family: var(--f-mono); font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.hl .vs { align-self: center; font: 800 22px var(--f-display); color: var(--muted); }
+.hl .choices { display: grid; gap: 8px; width: 100%; }
+.hl .choices .btn { justify-content: center; font-size: 17px; padding: 11px 16px; }
+.hl .good { color: var(--good); } .hl .bad { color: var(--bad); }
+@media (max-width: 640px) { .hl { grid-template-columns: 1fr; } .hl .vs { justify-self: center; } .challenge { grid-template-columns: auto minmax(0, 1fr); } .challenge .btn { grid-column: 1 / -1; justify-self: start; } .news { grid-template-columns: 1fr; } }
+.facts-card { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 16px; align-items: center; margin-top: 14px; }
+.facts-card .ico { width: 52px; height: 52px; border-radius: 14px; background: var(--accent-2); color: #fff; display: grid; place-items: center; font: 800 26px var(--f-display); }
+.facts-card p { margin: 4px 0 0; font-size: 17px; }
+.statrow { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 12px; }
+.stat { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--surface); }
+.stat b { display: block; font: 700 26px var(--f-display); font-variant-numeric: tabular-nums; }
+.stat span { font-size: 13px; color: var(--muted); }
+.gloss { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; margin-top: 12px; }
+.term { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--surface); display: grid; gap: 4px; align-content: start; }
+.term b { font: 700 17px var(--f-display); }
+.term p { margin: 0; font-size: 14px; color: var(--muted); }
+.term button { justify-self: start; border: 0; background: none; color: var(--accent); cursor: pointer; padding: 0; font-size: 13px; font-weight: 700; }
+.letters { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
+.letters button { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; min-width: 32px; padding: 4px 6px; cursor: pointer; font-family: var(--f-mono); font-size: 13px; }
+.letters button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+@media (max-width: 640px) { .facts-card { grid-template-columns: auto minmax(0, 1fr); } .facts-card .btn { grid-column: 1 / -1; justify-self: start; } }
+/* Leaflet 1.9.4 (inlined) */
+ .leaflet-pane, .leaflet-tile, .leaflet-marker-icon, .leaflet-marker-shadow, .leaflet-tile-container, .leaflet-pane > svg, .leaflet-pane > canvas, .leaflet-zoom-box, .leaflet-image-layer, .leaflet-layer { position: absolute; left: 0; top: 0; } .leaflet-container { overflow: hidden; } .leaflet-tile, .leaflet-marker-icon, .leaflet-marker-shadow { -webkit-user-select: none; -moz-user-select: none; user-select: none; -webkit-user-drag: none; } .leaflet-tile::selection { background: transparent; } .leaflet-safari .leaflet-tile { image-rendering: -webkit-optimize-contrast; } .leaflet-safari .leaflet-tile-container { width: 1600px; height: 1600px; -webkit-transform-origin: 0 0; } .leaflet-marker-icon, .leaflet-marker-shadow { display: block; } .leaflet-container .leaflet-overlay-pane svg { max-width: none !important; max-height: none !important; } .leaflet-container .leaflet-marker-pane img, .leaflet-container .leaflet-shadow-pane img, .leaflet-container .leaflet-tile-pane img, .leaflet-container img.leaflet-image-layer, .leaflet-container .leaflet-tile { max-width: none !important; max-height: none !important; width: auto; padding: 0; } .leaflet-container img.leaflet-tile { mix-blend-mode: plus-lighter; } .leaflet-container.leaflet-touch-zoom { -ms-touch-action: pan-x pan-y; touch-action: pan-x pan-y; } .leaflet-container.leaflet-touch-drag { -ms-touch-action: pinch-zoom; touch-action: none; touch-action: pinch-zoom; } .leaflet-container.leaflet-touch-drag.leaflet-touch-zoom { -ms-touch-action: none; touch-action: none; } .leaflet-container { -webkit-tap-highlight-color: transparent; } .leaflet-container a { -webkit-tap-highlight-color: rgba(51, 181, 229, 0.4); } .leaflet-tile { filter: inherit; visibility: hidden; } .leaflet-tile-loaded { visibility: inherit; } .leaflet-zoom-box { width: 0; height: 0; -moz-box-sizing: border-box; box-sizing: border-box; z-index: 800; } .leaflet-overlay-pane svg { -moz-user-select: none; } .leaflet-pane { z-index: 400; } .leaflet-tile-pane { z-index: 200; } .leaflet-overlay-pane { z-index: 400; } .leaflet-shadow-pane { z-index: 500; } .leaflet-marker-pane { z-index: 600; } .leaflet-tooltip-pane { z-index: 650; } .leaflet-popup-pane { z-index: 700; } .leaflet-map-pane canvas { z-index: 100; } .leaflet-map-pane svg { z-index: 200; } .leaflet-vml-shape { width: 1px; height: 1px; } .lvml { behavior: none; display: inline-block; position: absolute; } .leaflet-control { position: relative; z-index: 800; pointer-events: visiblePainted; pointer-events: auto; } .leaflet-top, .leaflet-bottom { position: absolute; z-index: 1000; pointer-events: none; } .leaflet-top { top: 0; } .leaflet-right { right: 0; } .leaflet-bottom { bottom: 0; } .leaflet-left { left: 0; } .leaflet-control { float: left; clear: both; } .leaflet-right .leaflet-control { float: right; } .leaflet-top .leaflet-control { margin-top: 10px; } .leaflet-bottom .leaflet-control { margin-bottom: 10px; } .leaflet-left .leaflet-control { margin-left: 10px; } .leaflet-right .leaflet-control { margin-right: 10px; } .leaflet-fade-anim .leaflet-popup { opacity: 0; -webkit-transition: opacity 0.2s linear; -moz-transition: opacity 0.2s linear; transition: opacity 0.2s linear; } .leaflet-fade-anim .leaflet-map-pane .leaflet-popup { opacity: 1; } .leaflet-zoom-animated { -webkit-transform-origin: 0 0; -ms-transform-origin: 0 0; transform-origin: 0 0; } svg.leaflet-zoom-animated { will-change: transform; } .leaflet-zoom-anim .leaflet-zoom-animated { -webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1); -moz-transition: -moz-transform 0.25s cubic-bezier(0,0,0.25,1); transition: transform 0.25s cubic-bezier(0,0,0.25,1); } .leaflet-zoom-anim .leaflet-tile, .leaflet-pan-anim .leaflet-tile { -webkit-transition: none; -moz-transition: none; transition: none; } .leaflet-zoom-anim .leaflet-zoom-hide { visibility: hidden; } .leaflet-interactive { cursor: pointer; } .leaflet-grab { cursor: -webkit-grab; cursor: -moz-grab; cursor: grab; } .leaflet-crosshair, .leaflet-crosshair .leaflet-interactive { cursor: crosshair; } .leaflet-popup-pane, .leaflet-control { cursor: auto; } .leaflet-dragging .leaflet-grab, .leaflet-dragging .leaflet-grab .leaflet-interactive, .leaflet-dragging .leaflet-marker-draggable { cursor: move; cursor: -webkit-grabbing; cursor: -moz-grabbing; cursor: grabbing; } .leaflet-marker-icon, .leaflet-marker-shadow, .leaflet-image-layer, .leaflet-pane > svg path, .leaflet-tile-container { pointer-events: none; } .leaflet-marker-icon.leaflet-interactive, .leaflet-image-layer.leaflet-interactive, .leaflet-pane > svg path.leaflet-interactive, svg.leaflet-image-layer.leaflet-interactive path { pointer-events: visiblePainted; pointer-events: auto; } .leaflet-container { background: #ddd; outline-offset: 1px; } .leaflet-container a { color: #0078A8; } .leaflet-zoom-box { border: 2px dotted #38f; background: rgba(255,255,255,0.5); } .leaflet-container { font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; font-size: 12px; font-size: 0.75rem; line-height: 1.5; } .leaflet-bar { box-shadow: 0 1px 5px rgba(0,0,0,0.65); border-radius: 4px; } .leaflet-bar a { background-color: #fff; border-bottom: 1px solid #ccc; width: 26px; height: 26px; line-height: 26px; display: block; text-align: center; text-decoration: none; color: black; } .leaflet-bar a, .leaflet-control-layers-toggle { background-position: 50% 50%; background-repeat: no-repeat; display: block; } .leaflet-bar a:hover, .leaflet-bar a:focus { background-color: #f4f4f4; } .leaflet-bar a:first-child { border-top-left-radius: 4px; border-top-right-radius: 4px; } .leaflet-bar a:last-child { border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-bottom: none; } .leaflet-bar a.leaflet-disabled { cursor: default; background-color: #f4f4f4; color: #bbb; } .leaflet-touch .leaflet-bar a { width: 30px; height: 30px; line-height: 30px; } .leaflet-touch .leaflet-bar a:first-child { border-top-left-radius: 2px; border-top-right-radius: 2px; } .leaflet-touch .leaflet-bar a:last-child { border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; } .leaflet-control-zoom-in, .leaflet-control-zoom-out { font: bold 18px 'Lucida Console', Monaco, monospace; text-indent: 1px; } .leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out { font-size: 22px; } .leaflet-control-layers { box-shadow: 0 1px 5px rgba(0,0,0,0.4); background: #fff; border-radius: 5px; } .leaflet-control-layers-toggle { background-image: none; width: 36px; height: 36px; } .leaflet-retina .leaflet-control-layers-toggle { background-image: none; background-size: 26px 26px; } .leaflet-touch .leaflet-control-layers-toggle { width: 44px; height: 44px; } .leaflet-control-layers .leaflet-control-layers-list, .leaflet-control-layers-expanded .leaflet-control-layers-toggle { display: none; } .leaflet-control-layers-expanded .leaflet-control-layers-list { display: block; position: relative; } .leaflet-control-layers-expanded { padding: 6px 10px 6px 6px; color: #333; background: #fff; } .leaflet-control-layers-scrollbar { overflow-y: scroll; overflow-x: hidden; padding-right: 5px; } .leaflet-control-layers-selector { margin-top: 2px; position: relative; top: 1px; } .leaflet-control-layers label { display: block; font-size: 13px; font-size: 1.08333em; } .leaflet-control-layers-separator { height: 0; border-top: 1px solid #ddd; margin: 5px -10px 5px -6px; } .leaflet-default-icon-path { background-image: none; } .leaflet-container .leaflet-control-attribution { background: #fff; background: rgba(255, 255, 255, 0.8); margin: 0; } .leaflet-control-attribution, .leaflet-control-scale-line { padding: 0 5px; color: #333; line-height: 1.4; } .leaflet-control-attribution a { text-decoration: none; } .leaflet-control-attribution a:hover, .leaflet-control-attribution a:focus { text-decoration: underline; } .leaflet-attribution-flag { display: inline !important; vertical-align: baseline !important; width: 1em; height: 0.6669em; } .leaflet-left .leaflet-control-scale { margin-left: 5px; } .leaflet-bottom .leaflet-control-scale { margin-bottom: 5px; } .leaflet-control-scale-line { border: 2px solid #777; border-top: none; line-height: 1.1; padding: 2px 5px 1px; white-space: nowrap; -moz-box-sizing: border-box; box-sizing: border-box; background: rgba(255, 255, 255, 0.8); text-shadow: 1px 1px #fff; } .leaflet-control-scale-line:not(:first-child) { border-top: 2px solid #777; border-bottom: none; margin-top: -2px; } .leaflet-control-scale-line:not(:first-child):not(:last-child) { border-bottom: 2px solid #777; } .leaflet-touch .leaflet-control-attribution, .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar { box-shadow: none; } .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar { border: 2px solid rgba(0,0,0,0.2); background-clip: padding-box; } .leaflet-popup { position: absolute; text-align: center; margin-bottom: 20px; } .leaflet-popup-content-wrapper { padding: 1px; text-align: left; border-radius: 12px; } .leaflet-popup-content { margin: 13px 24px 13px 20px; line-height: 1.3; font-size: 13px; font-size: 1.08333em; min-height: 1px; } .leaflet-popup-content p { margin: 17px 0; margin: 1.3em 0; } .leaflet-popup-tip-container { width: 40px; height: 20px; position: absolute; left: 50%; margin-top: -1px; margin-left: -20px; overflow: hidden; pointer-events: none; } .leaflet-popup-tip { width: 17px; height: 17px; padding: 1px; margin: -10px auto 0; pointer-events: auto; -webkit-transform: rotate(45deg); -moz-transform: rotate(45deg); -ms-transform: rotate(45deg); transform: rotate(45deg); } .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: white; color: #333; box-shadow: 0 3px 14px rgba(0,0,0,0.4); } .leaflet-container a.leaflet-popup-close-button { position: absolute; top: 0; right: 0; border: none; text-align: center; width: 24px; height: 24px; font: 16px/24px Tahoma, Verdana, sans-serif; color: #757575; text-decoration: none; background: transparent; } .leaflet-container a.leaflet-popup-close-button:hover, .leaflet-container a.leaflet-popup-close-button:focus { color: #585858; } .leaflet-popup-scrolled { overflow: auto; } .leaflet-oldie .leaflet-popup-content-wrapper { -ms-zoom: 1; } .leaflet-oldie .leaflet-popup-tip { width: 24px; margin: 0 auto; -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)"; filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678); } .leaflet-oldie .leaflet-control-zoom, .leaflet-oldie .leaflet-control-layers, .leaflet-oldie .leaflet-popup-content-wrapper, .leaflet-oldie .leaflet-popup-tip { border: 1px solid #999; } .leaflet-div-icon { background: #fff; border: 1px solid #666; } .leaflet-tooltip { position: absolute; padding: 6px; background-color: #fff; border: 1px solid #fff; border-radius: 3px; color: #222; white-space: nowrap; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; pointer-events: none; box-shadow: 0 1px 3px rgba(0,0,0,0.4); } .leaflet-tooltip.leaflet-interactive { cursor: pointer; pointer-events: auto; } .leaflet-tooltip-top:before, .leaflet-tooltip-bottom:before, .leaflet-tooltip-left:before, .leaflet-tooltip-right:before { position: absolute; pointer-events: none; border: 6px solid transparent; background: transparent; content: ""; } .leaflet-tooltip-bottom { margin-top: 6px; } .leaflet-tooltip-top { margin-top: -6px; } .leaflet-tooltip-bottom:before, .leaflet-tooltip-top:before { left: 50%; margin-left: -6px; } .leaflet-tooltip-top:before { bottom: 0; margin-bottom: -12px; border-top-color: #fff; } .leaflet-tooltip-bottom:before { top: 0; margin-top: -12px; margin-left: -6px; border-bottom-color: #fff; } .leaflet-tooltip-left { margin-left: -6px; } .leaflet-tooltip-right { margin-left: 6px; } .leaflet-tooltip-left:before, .leaflet-tooltip-right:before { top: 50%; margin-top: -6px; } .leaflet-tooltip-left:before { right: 0; margin-right: -12px; border-left-color: #fff; } .leaflet-tooltip-right:before { left: 0; margin-left: -12px; border-right-color: #fff; } @media print { .leaflet-control { -webkit-print-color-adjust: exact; print-color-adjust: exact; } } 
+/* Detailed maps (Mapy.com) */
+.dmap iframe.mframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+.dmap.frame-mode .mlogo { display: none; }
+.dmap { position: relative; height: 100%; min-height: 440px; background: var(--sunk); }
+.dmap #detailMap { position: absolute; inset: 0; z-index: 1; }
+.dmap .panel { z-index: 500; }
+.dmap .mlogo { position: absolute; left: 14px; bottom: 30px; z-index: 600; display: block; line-height: 0; }
+.dmap .mlogo img { height: 30px; width: auto; }
+.dmap .leaflet-control-attribution { font: 11px var(--f-body); }
+.dmap .leaflet-control-attribution a { color: #0b6a58; }
+.dmap .zoom { z-index: 500; }
+.dkey { display: grid; gap: 8px; }
+.dkey input { width: 100%; background: var(--sunk); }
+.dnote { position: absolute; inset: 0; z-index: 400; display: grid; place-items: center; padding: 20px; background: var(--paper); }
+.dnote .card { max-width: 560px; display: grid; gap: 12px; }
+.dnote ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.dpin { width: 18px; height: 18px; border-radius: 50%; background: var(--accent-2); border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,.4); }
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; }
+  .globe-wrap { max-width: 420px; }
+  .daily { grid-template-columns: auto minmax(0, 1fr); }
+  .daily .acts { grid-column: 1 / -1; }
+}
+@media (max-width: 760px) {
+  .app { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) auto; }
+  .rail { order: 2; flex-direction: row; padding: 4px 4px calc(4px + env(safe-area-inset-bottom, 0px)); gap: 0; justify-content: space-around; }
+  .brand, .rail .label, .player { display: none; }
+  .rail a.tab { flex-direction: column; gap: 2px; padding: 6px 2px; font-size: 11px; flex: 1; text-align: center; min-width: 0; }
+  .rail a.tab .long { display: none; } .rail a.tab .short { display: inline; }
+  .rail a.tab[aria-current="page"] { box-shadow: inset 0 3px 0 var(--accent); }
+  .panel { width: calc(100% - 76px); }
+  .panel .toggle { display: inline-flex; }
+  .panel.collapsed > :not(.phead) { display: none; }
+  .info { left: 14px; right: 14px; width: auto; bottom: 14px; max-height: 55%; }
+  .msg { max-width: 94%; }
+  .toast { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+  .cmpbox { grid-template-columns: 1fr; }
+  .cmp-row { grid-template-columns: minmax(0, 1fr) 84px minmax(0, 1fr); }
+  .col-hide { display: none; }
+  .checks { grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="app">
+  <nav class="rail" aria-label="Gdzie chcesz wejść?">
+    <a class="brand" href="#start">
+      <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="currentColor" stroke-width="2"/><ellipse cx="20" cy="20" rx="7.5" ry="17" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".7"/><path d="M4 14h32M4 26h32" stroke="currentColor" stroke-width="1.5" opacity=".7"/><circle cx="27" cy="13" r="3" fill="#3dbb9b"/></svg>
+      <span><b>GeoFo <span class="ver" id="verTag"></span></b><small>www.geofoapp.com</small></span>
+    </a>
+    <div class="label">Gdzie chcesz wejść?</div>
+    <a class="tab" href="#start" data-tab="start"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span class="long">Start</span><span class="short">Start</span></a>
+    <a class="tab" href="#topo" data-tab="topo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20l6-11 4 6 3-4 5 9z"/></svg><span class="long">Mapy topograficzne</span><span class="short">Topo</span></a>
+    <a class="tab" href="#carto" data-tab="carto"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg><span class="long">Mapy kartograficzne</span><span class="short">Mapy</span></a>
+    <a class="tab" href="#dokladne" data-tab="dokladne"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span class="long">Mapy dokładne</span><span class="short">Dokładne</span></a>
+    <a class="tab" href="#atlas" data-tab="atlas"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg><span class="long">Atlas krajów</span><span class="short">Atlas</span></a>
+    <a class="tab" href="#gry" data-tab="gry"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3a3 3 0 0 1-3 4M7 5H4a3 3 0 0 0 3 4"/></svg><span class="long">Gry i quizy</span><span class="short">Gry</span></a>
+    <a class="tab" href="#czat" data-tab="czat"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v11H9l-5 4z"/></svg><span class="long">Czat AI</span><span class="short">Czat</span></a>
+    <div class="player" id="player"></div>
+  </nav>
+
+  <main id="main">
+    <!-- START -->
+    <section class="view" id="v-start">
+      <div class="pad">
+        <div class="hero">
+          <div>
+            <div class="eyebrow">www.geofoapp.com</div>
+            <h1>Cała Ziemia <em>na jednym ekranie.</em></h1>
+            <p class="lead">Kręć globusem, przybliżaj mapy topograficzne aż do pojedynczych rzek i miast, porównuj kraje w atlasie, zbieraj punkty i odznaki w grach, a o wszystko, czego nie wiesz, pytaj GeoBota.</p>
+            <div class="cta"><a class="btn primary" href="#gry">Zagraj w quiz</a><a class="btn" href="#carto">Otwórz mapę</a><a class="btn" href="#czat">Zapytaj AI</a></div>
+            <div class="stats"><span><b class="mono">250</b>państw i terytoriów</span><span><b class="mono" id="stQ">10 200</b>pytań w quizach</span><span><b class="mono">923</b>miasta na mapie</span><span><b class="mono">6</b>rodzajów gier</span></div>
+          </div>
+          <div class="globe-wrap">
+            <canvas id="globe" aria-label="Obracający się globus. Przeciągnij, aby obrócić, kliknij kraj."></canvas>
+            <div class="globe-hint">przeciągnij · kliknij kraj</div>
+            <div class="globe-tip" id="globeTip" hidden></div>
+          </div>
+        </div>
+        <div class="card daily" id="daily"></div>
+        <div class="card challenge" id="challenge"></div>
+        <div class="card facts-card" id="factCard"></div>
+        <div class="card news" id="news"></div>
+        <div class="row" style="margin-top:12px"><button class="btn small" type="button" id="themeStart"></button></div>
+        <div class="tiles">
+          <a class="tile" href="#topo"><div class="pic" style="background-image:url(relief.jpg)"></div><div class="txt"><h3>Mapy topograficzne</h3><p>Rzeźba terenu, wysokości i głębie, satelita.</p></div></a>
+          <a class="tile" href="#carto"><div class="pic" style="background-image:url(etopo.jpg)"></div><div class="txt"><h3>Mapy kartograficzne</h3><p>Państwa, stolice, miasta, rzeki i jeziora.</p></div></a>
+          <a class="tile" href="#atlas"><div class="pic atlas" id="atlasPic"></div><div class="txt"><h3>Atlas krajów</h3><p>Szukaj, sortuj i porównuj państwa.</p></div></a>
+          <a class="tile" href="#gry"><div class="pic games">?</div><div class="txt"><h3>Gry i quizy</h3><p>Quiz, mapa, flagi i stolice na czas.</p></div></a>
+          <a class="tile" href="#czat"><div class="pic chat"><svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.6"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/></svg></div><div class="txt"><h3>Czat AI</h3><p>Od łatwych pytań po zaawansowane.</p></div></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAPY -->
+    <section class="view" id="v-topo" hidden style="height:100%"><div class="mapview" data-kind="topo"></div></section>
+    <section class="view" id="v-carto" hidden style="height:100%"><div class="mapview" data-kind="carto"></div></section>
+    <section class="view" id="v-dokladne" hidden style="height:100%">
+      <div class="dmap">
+        <div id="detailMap"></div>
+        <div class="panel">
+          <div class="phead"><h2>Mapy dokładne</h2><button class="btn small toggle" type="button" id="dToggle">Opcje</button></div>
+          <div class="findbox"><input type="search" id="dFind" placeholder="Szukaj adresu, miasta, góry…" autocomplete="off" aria-label="Szukaj miejsca"><div class="sugg" id="dSugg" hidden></div></div>
+          <div class="seg" role="group" aria-label="Rodzaj mapy" id="dSeg"></div>
+          <div class="note" id="dInfo">Mapa Mapy.com: przesuwaj, przybliżaj i szukaj miejsc.</div>
+          <div class="row"><a class="btn small" id="dOpen" href="https://mapy.com/" target="_blank" rel="noopener">Otwórz to miejsce w Mapy.com ↗</a></div>
+          <details class="dkey" id="dKeyBox"><summary class="note" style="cursor:pointer">Tryb zaawansowany (opcjonalny klucz API)</summary>
+            <input type="text" id="dKey" placeholder="Wklej klucz API z developer.mapy.com" autocomplete="off" aria-label="Klucz API Mapy.com">
+            <div class="row"><button class="btn small primary" type="button" id="dKeySave">Zapisz klucz</button><button class="btn small" type="button" id="dKeyDel">Usuń</button></div>
+          </details>
+        </div>
+        <a class="mlogo" href="https://mapy.com/" target="_blank" rel="noopener" aria-label="Mapy.com"><img src="https://api.mapy.com/img/api/logo.svg" alt="Mapy.com"></a>
+        <div class="dnote" id="dNote" hidden></div>
+      </div>
+    </section>
+
+    <!-- ATLAS -->
+    <section class="view" id="v-atlas" hidden>
+      <div class="pad">
+        <div class="eyebrow">Atlas krajów</div>
+        <h1 class="page-h">Wszystkie państwa świata</h1>
+        <p class="lead">Kliknij nagłówek kolumny, żeby posortować. Kliknij kraj, żeby zobaczyć go na mapie. Na dole porównasz dwa państwa.</p>
+        <div class="atlas-tools">
+          <input type="search" id="atlasQ" placeholder="Szukaj kraju lub stolicy…" aria-label="Szukaj kraju lub stolicy">
+          <select id="atlasR" aria-label="Kontynent"><option value="">Cały świat</option></select>
+          <select id="atlasI" aria-label="Status"><option value="1">Państwa niepodległe</option><option value="">Wszystkie (z terytoriami)</option></select>
+        </div>
+        <div class="note mono" id="atlasCount" style="margin-bottom:8px"></div>
+        <div class="tablewrap" style="max-height:62vh"><table><thead><tr id="atlasHead"></tr></thead><tbody id="atlasBody"></tbody></table></div>
+
+        <h2 class="sec">Porównaj dwa kraje</h2>
+        <div class="row" style="margin-top:12px">
+          <select id="cmpA" aria-label="Pierwszy kraj"></select><span class="note">vs</span><select id="cmpB" aria-label="Drugi kraj"></select>
+          <button class="btn small" id="cmpSwap" type="button">Zamień</button>
+          <button class="btn small" id="cmpAsk" type="button">Zapytaj GeoBota o różnice</button>
+        </div>
+        <div id="cmpOut"></div>
+
+        <h2 class="sec">Słowniczek pojęć geograficznych</h2>
+        <div class="atlas-tools" style="margin-bottom:0"><input type="search" id="glossQ" placeholder="Szukaj pojęcia, np. fiord, subdukcja…" aria-label="Szukaj pojęcia"></div>
+        <div class="letters" id="glossL"></div>
+        <div class="gloss" id="gloss"></div>
+      </div>
+    </section>
+
+    <!-- GRY -->
+    <section class="view" id="v-gry" hidden>
+      <div class="pad">
+        <div class="eyebrow">Gry i quizy</div>
+        <h1 class="page-h">Sprawdź, ile wiesz o świecie</h1>
+        <p class="lead">Za każdą grę dostajesz punkty doświadczenia. Zbieraj je, awansuj na kolejne poziomy i odblokowuj odznaki.</p>
+        <div class="modes" id="modes"></div>
+        <div class="setup" id="setup"></div>
+        <div class="stage" id="stage"></div>
+        <h2 class="sec">Twoje statystyki</h2>
+        <div class="statrow" id="stats"></div>
+        <h2 class="sec">Twoje odznaki</h2>
+        <div class="badges" id="badges"></div>
+      </div>
+    </section>
+
+    <!-- CZAT -->
+    <section class="view" id="v-czat" hidden style="height:100%">
+      <div class="chat">
+        <div style="display:grid;gap:10px">
+          <div class="row" style="justify-content:space-between;align-items:flex-end">
+            <div><div class="eyebrow">Czat AI</div><h1 style="font-size:clamp(28px,4vw,40px);margin-top:4px">Zapytaj GeoBota</h1></div>
+            <div class="levelpick" role="group" aria-label="Poziom odpowiedzi"><span class="note">Odpowiedzi:</span><button type="button" data-lv="prosto">prosto</button><button type="button" data-lv="normalnie">normalnie</button><button type="button" data-lv="ekspert">jak ekspert</button></div>
+          </div>
+          <div class="chips" id="chips">
+            <button>Jaka jest stolica Australii?</button>
+            <button>Dlaczego na równiku jest gorąco?</button>
+            <button>Jak powstały Tatry?</button>
+            <button>Jakie kraje leżą nad Morzem Bałtyckim?</button>
+            <button>Wyjaśnij odwzorowanie Merkatora i jego zniekształcenia</button>
+            <button>Czym różni się subdukcja od ryftu kontynentalnego?</button>
+          </div>
+        </div>
+        <div class="log" id="log"><div class="empty" id="empty"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><p style="margin:0">Napisz pytanie albo wybierz gotowe. Kraje, o których wspomni GeoBot, pokażę Ci od razu na mapie.</p></div></div>
+        <div style="display:grid;gap:6px">
+          <form class="ask" id="askForm">
+            <textarea id="askInput" rows="2" placeholder="Zadaj pytanie o geografię…"></textarea>
+            <button class="btn primary" id="askBtn">Wyślij</button>
+          </form>
+          <div class="note" id="chatNote">Enter wysyła, Shift+Enter to nowa linia.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+<script>
+"use strict";
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+const fmt = n => Math.round(n).toLocaleString("pl-PL");
+const REG = {Europe: "Europa", Asia: "Azja", Africa: "Afryka", Americas: "Ameryka", Oceania: "Oceania", Antarctic: "Antarktyka"};
+const SUB = {"Northern Europe": "Europa Północna", "Western Europe": "Europa Zachodnia", "Southern Europe": "Europa Południowa", "Eastern Europe": "Europa Wschodnia", "Central Europe": "Europa Środkowa", "Southeast Europe": "Europa Płd.-Wsch.", "Western Asia": "Azja Zachodnia", "Central Asia": "Azja Środkowa", "Southern Asia": "Azja Południowa", "Eastern Asia": "Azja Wschodnia", "South-Eastern Asia": "Azja Płd.-Wsch.", "Northern Africa": "Afryka Północna", "Western Africa": "Afryka Zachodnia", "Eastern Africa": "Afryka Wschodnia", "Middle Africa": "Afryka Środkowa", "Southern Africa": "Afryka Południowa", "North America": "Ameryka Północna", "Central America": "Ameryka Środkowa", "South America": "Ameryka Południowa", "Caribbean": "Karaiby", "Australia and New Zealand": "Australia i N. Zelandia", "Melanesia": "Melanezja", "Micronesia": "Mikronezja", "Polynesia": "Polinezja"};
+const store = {
+  get(k, d) { try { const v = localStorage.getItem("geofo:" + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem("geofo:" + k, JSON.stringify(v)); } catch {} }
+};
+const isDark = () => document.documentElement.dataset.theme === "dark" || (matchMedia("(prefers-color-scheme: dark)").matches && document.documentElement.dataset.theme !== "light");
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const shuffle = a => d3.shuffle(a);
+const pickN = (a, n) => shuffle(a.slice()).slice(0, n);
+
+/* ---------- Data ---------- */
+const DATA = {};
+let FLAGS = {};
+const flagURL = c2 => FLAGS[c2] ? "data:image/svg+xml;charset=utf-8," + encodeURIComponent(FLAGS[c2]) : "";
+const flagImg = (c2, w = 28, alt = "") => `<img class="flag" src="${flagURL(c2)}" width="${w}" alt="${esc(alt)}" data-f="${c2}">`;
+function refreshFlags(root = document) { $$("img.flag[data-f]", root).forEach(i => { if (!i.getAttribute("src")) i.src = flagURL(i.dataset.f); }); }
+const flagsReady = fetch("flags.json").then(r => r.json()).then(f => { FLAGS = f; refreshFlags(); }).catch(() => {});
+
+const ready = (async () => {
+  const [countries, borders, cities, hydro] = await Promise.all(["countries.json", "borders.json", "cities.json", "hydro.json"].map(u => fetch(u).then(r => r.json())));
+  DATA.c = countries; DATA.cities = cities; DATA.hydro = hydro;
+  DATA.byNum = {}; DATA.by2 = {};
+  for (const [k, v] of Object.entries(countries)) { v.code = k; if (v.num) DATA.byNum[v.num] = k; DATA.by2[v.c2] = k; }
+  DATA.list = Object.values(countries).sort((a, b) => a.n.localeCompare(b.n, "pl"));
+  DATA.indep = DATA.list.filter(c => c.ind);
+  DATA.topo = borders;
+  DATA.features = topojson.feature(borders, borders.objects.countries).features.filter(f => f.geometry);
+  DATA.mesh = topojson.mesh(borders, borders.objects.countries, (a, b) => a !== b);
+  DATA.land = topojson.merge(borders, borders.objects.countries.geometries);
+  // greedy colouring so that neighbouring countries never share a colour
+  const geoms = borders.objects.countries.geometries, nb = topojson.neighbors(geoms), col = {}, idx = geoms.map((g, i) => i).sort((a, b) => nb[b].length - nb[a].length);
+  for (const i of idx) { const used = new Set(nb[i].map(j => col[geoms[j].id]).filter(v => v != null)); let c = (+geoms[i].id || i) % 6; for (let k = 0; k < 6 && used.has(c); k++) c = (c + 1) % 6; col[geoms[i].id] = c; }
+  DATA.color = col;
+  // countries with a polygon on the map
+  DATA.mapped = new Set(DATA.features.map(f => DATA.byNum[f.id]).filter(Boolean));
+})();
+let hdPromise = null;
+function loadHD() {
+  if (!hdPromise) hdPromise = fetch("borders-hd.json").then(r => r.json()).then(t => ({
+    features: topojson.feature(t, t.objects.countries).features.filter(f => f.geometry),
+    mesh: topojson.mesh(t, t.objects.countries, (a, b) => a !== b),
+    land: topojson.merge(t, t.objects.countries.geometries)
+  }));
+  return hdPromise;
+}
+
+/* ---------- Version, theme ---------- */
+const VERSION = "2.3.1";
+const CHANGES = [
+  ["Ludność krajów i stolic", "po kliknięciu kraju na mapie widać liczbę mieszkańców, gęstość zaludnienia, liczbę mieszkańców stolicy i powierzchnię stolicy"],
+  ["Poprawka 2.2.1", "Mapy dokładne pokazują mapę Mapy.com od razu w GeoFo, bez logowania i bez klucza API"],
+  ["Mapy dokładne", "nowa zakładka ze szczegółowymi mapami Mapy.com: ulice, budynki, szlaki turystyczne i zdjęcia lotnicze, z wyszukiwarką adresów"],
+  ["Wyzwanie dnia", "5 pytań dziennie, licznik dni z rzędu i odznaka za systematyczność"],
+  ["Nowa gra: Większy czy mniejszy?", "zgadnij, który kraj ma większą powierzchnię, i zbuduj jak najdłuższą serię"],
+  ["Przełącznik motywu", "jasny, ciemny albo automatycznie jak w systemie"],
+  ["Mapy", "pełny ekran i przycisk Losowy kraj"],
+  ["Dzień i noc", "nowa warstwa map pokazuje, gdzie teraz jest noc i gdzie świeci Słońce"],
+  ["Słowniczek", "50 pojęć geograficznych w Atlasie, od archipelagu po zwrotnik"],
+  ["Czy wiesz, że…", "ciekawostki wyliczane z danych 250 państw"],
+  ["Statystyki gracza", "liczba gier, odpowiedzi i trafność"],
+  ["Nowe odznaki", "Systematyczny, Na fali i Podróżnik losu"],
+];
+$("#verTag").textContent = "v" + VERSION;
+$("#news").innerHTML = `<div class="tag">Nowości<br>v${VERSION}</div><ul>${CHANGES.map(([a, b]) => `<li><b>${a}</b>: ${b}</li>`).join("")}</ul>`;
+const THEMES = ["auto", "light", "dark"], THEME_TXT = {auto: "Motyw: automatyczny", light: "Motyw: jasny", dark: "Motyw: ciemny"};
+let theme = store.get("theme", "auto");
+function applyTheme() {
+  if (theme === "auto") delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = theme;
+  $$(".themebtn, #themeStart").forEach(b => b.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg>${THEME_TXT[theme]}`);
+  if (window.Globe) Globe.draw();
+}
+function cycleTheme() { theme = THEMES[(THEMES.indexOf(theme) + 1) % 3]; store.set("theme", theme); applyTheme(); }
+$("#themeStart").onclick = cycleTheme;
+
+/* ---------- Player: XP, levels, badges ---------- */
+const BADGES = [
+  {id: "start", name: "Pierwsze kroki", how: "Ukończ dowolną grę"},
+  {id: "perfect", name: "Bezbłędnie", how: "100% w quizie (min. 10 pytań)"},
+  {id: "hard", name: "Twardy orzech", how: "Min. 70% w trudnym quizie"},
+  {id: "eagle", name: "Sokole oko", how: "800+ pkt w grze „Gdzie to jest?”"},
+  {id: "flags", name: "Flagomaniak", how: "15+ flag w sprincie"},
+  {id: "caps", name: "Stołeczny", how: "15+ stolic w sprincie"},
+  {id: "explorer", name: "Odkrywca", how: "Otwórz 25 krajów na mapie"},
+  {id: "curious", name: "Ciekawski", how: "Zadaj GeoBotowi 5 pytań"},
+  {id: "measure", name: "Kartograf", how: "Zmierz odległość na mapie"},
+  {id: "globe", name: "Globtroter", how: "Zdobądź 1000 XP"},
+  {id: "daily3", name: "Systematyczny", how: "Wyzwanie dnia 3 dni z rzędu"},
+  {id: "wave", name: "Na fali", how: "Seria 10 w grze Większy czy mniejszy?"},
+  {id: "random", name: "Podróżnik losu", how: "Użyj przycisku Losowy kraj"},
+];
+const P = Object.assign({xp: 0, badges: [], seen: [], asked: 0, best: {}, stats: {games: 0, answers: 0, correct: 0}}, store.get("profile", {}));
+P.stats ||= {games: 0, answers: 0, correct: 0};
+function tally(ok) { P.stats.answers++; if (ok) P.stats.correct++; saveP(); }
+const saveP = () => store.set("profile", P);
+const lvlOf = xp => Math.floor(Math.sqrt(xp / 40)) + 1;
+function renderPlayer() {
+  const l = lvlOf(P.xp), lo = 40 * (l - 1) ** 2, hi = 40 * l ** 2;
+  $("#player").innerHTML = `<button class="themebtn" type="button"></button><div class="lvl"><span>Poziom ${l}</span><span>${fmt(P.xp)} XP</span></div><div class="xpbar"><i style="width:${(P.xp - lo) / (hi - lo) * 100}%"></i></div><div class="badges-mini">Odznaki: ${P.badges.length} / ${BADGES.length}</div>`;
+  $(".themebtn", $("#player")).onclick = cycleTheme; applyTheme();
+  if ($("#badges")) $("#badges").innerHTML = BADGES.map(b => `<div class="badge ${P.badges.includes(b.id) ? "on" : ""}"><div class="medal"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17l-6.1 3.4 1.5-6.8L2.2 9l6.9-.7z"/></svg></div><b>${b.name}</b><span>${b.how}</span></div>`).join("");
+}
+let toastT;
+function toast(html) {
+  const t = $("#toast"); t.innerHTML = html; t.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 3600);
+}
+function award(id) {
+  if (P.badges.includes(id)) return;
+  P.badges.push(id); saveP(); renderPlayer();
+  const b = BADGES.find(x => x.id === id);
+  toast(`<span class="medal"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17l-6.1 3.4 1.5-6.8L2.2 9l6.9-.7z"/></svg></span><span>Nowa odznaka: <b>${b.name}</b></span>`);
+}
+function addXP(n) {
+  const before = lvlOf(P.xp);
+  P.xp += Math.max(0, Math.round(n)); saveP(); renderPlayer();
+  if (P.xp >= 1000) award("globe");
+  if (lvlOf(P.xp) > before) setTimeout(() => toast(`Awans! Masz teraz <b>poziom ${lvlOf(P.xp)}</b>`), 900);
+}
+function sawCountry(code) {
+  if (!P.seen.includes(code)) { P.seen.push(code); saveP(); if (P.seen.length >= 25) award("explorer"); }
+}
+renderPlayer();
+
+/* ---------- Routing ---------- */
+const TABS = ["start", "topo", "carto", "dokladne", "atlas", "gry", "czat"];
+const maps = {};
+let pendingSelect = null;
+function route() {
+  const t = TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "start";
+  for (const id of TABS) $("#v-" + id).hidden = id !== t;
+  $$(".rail a.tab").forEach(a => a.dataset.tab === t ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+  $("#main").scrollTop = 0;
+  if (t === "topo" || t === "carto") {
+    if (!maps[t]) maps[t] = new GeoMap($(`#v-${t} .mapview`), {kind: t});
+    else maps[t].resize();
+    if (pendingSelect) { const c = pendingSelect; pendingSelect = null; maps[t].ready.then(() => maps[t].selectCode(c)); }
+  }
+  if (t === "dokladne") Detail.init();
+  if (t === "atlas") Atlas.init();
+  if (t === "gry") Games.init();
+  if (t === "start") Globe.start(); else Globe.stop();
+  if (t === "czat") setTimeout(() => $("#askInput").focus(), 50);
+}
+addEventListener("hashchange", route);
+function showOnMap(code) { pendingSelect = code; if (location.hash === "#carto") route(); else location.hash = "carto"; }
+
+/* ---------- Globe (start page) ---------- */
+const POL = ["#f3dca4", "#cfe5b4", "#f3c4b2", "#c9dcf0", "#e6cde6", "#bfe3d8"];
+const POL_D = ["#6b5b35", "#4a6343", "#704b40", "#3f5672", "#604763", "#3d6359"];
+const polColor = (f, i, dark) => (dark ? POL_D : POL)[DATA.color?.[f.id] ?? ((+f.id || i) % POL.length)];
+const Globe = {
+  async init() {
+    if (this.ok) return; this.ok = true;
+    const t = await fetch("globe.json").then(r => r.json()); await ready;
+    this.feats = topojson.feature(t, t.objects.countries).features;
+    this.mesh = topojson.mesh(t, t.objects.countries, (a, b) => a !== b);
+    this.cv = $("#globe"); this.ctx = this.cv.getContext("2d");
+    this.proj = d3.geoOrthographic().clipAngle(90).precision(0.6).rotate([-15, -30]);
+    this.path = d3.geoPath(this.proj, this.ctx);
+    this.grat = d3.geoGraticule10();
+    this.hover = null; this.sel = null;
+    const resize = () => { const r = this.cv.getBoundingClientRect(); if (r.width < 20) return; const d = Math.min(devicePixelRatio || 1, 2); this.size = r.width; this.cv.width = r.width * d; this.cv.height = r.width * d; this.dpr = d; this.proj.translate([r.width / 2, r.width / 2]).scale(r.width / 2 - 4); this.draw(); };
+    new ResizeObserver(resize).observe(this.cv); resize();
+    let start, rot0, moved = false;
+    this.cv.addEventListener("pointerdown", e => { start = [e.clientX, e.clientY]; rot0 = this.proj.rotate(); moved = false; this.cv.setPointerCapture(e.pointerId); this.paused = true; });
+    this.cv.addEventListener("pointermove", e => {
+      if (start) {
+        const dx = e.clientX - start[0], dy = e.clientY - start[1];
+        if (Math.hypot(dx, dy) > 3) moved = true;
+        const k = 90 / this.proj.scale();
+        this.proj.rotate([rot0[0] + dx * k * 1.4, Math.max(-80, Math.min(80, rot0[1] - dy * k * 1.4))]); this.draw();
+      } else { const f = this.at(e); if (f !== this.hover) { this.hover = f; this.cv.style.cursor = f ? "pointer" : ""; this.draw(); } }
+    });
+    this.cv.addEventListener("pointerup", e => { if (start && !moved) this.click(e); start = null; setTimeout(() => this.paused = false, 2500); });
+    this.cv.addEventListener("pointerleave", () => { this.hover = null; this.draw(); });
+    new MutationObserver(() => this.draw()).observe(document.documentElement, {attributes: true, attributeFilter: ["data-theme"]});
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => this.draw());
+  },
+  at(e) {
+    const r = this.cv.getBoundingClientRect(); const p = this.proj.invert([e.clientX - r.left, e.clientY - r.top]);
+    if (!p || d3.geoDistance(p, this.proj.invert(this.proj.translate())) > Math.PI / 2) return null;
+    return this.feats.find(f => d3.geoContains(f, p)) || null;
+  },
+  click(e) {
+    const f = this.at(e); const code = f && DATA.byNum[f.id]; const c = code && DATA.c[code];
+    if (!c) { this.sel = null; $("#globeTip").hidden = true; this.draw(); return; }
+    this.sel = f; sawCountry(code);
+    const tip = $("#globeTip");
+    tip.innerHTML = `${flagImg(c.c2, 30, c.n)}<span><b>${esc(c.n)}</b> · ${esc(c.cap[0] || "—")}</span><button class="btn small primary" type="button">Na mapie</button>`;
+    tip.hidden = false; $("button", tip).onclick = () => showOnMap(code);
+    const target = d3.geoCentroid(f), r0 = this.proj.rotate(), r1 = [-target[0], -target[1]];
+    const ip = d3.interpolate(r0, r1); this.paused = true;
+    d3.timer((el) => { const t = Math.min(1, el / 800); this.proj.rotate(ip(d3.easeCubic(t))); this.draw(); return t >= 1; });
+    setTimeout(() => this.paused = false, 6000);
+  },
+  draw() {
+    if (!this.ctx || !(this.size > 20)) return;
+    const {ctx, path, size, dpr} = this, dark = isDark();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, size, size);
+    const r = this.proj.scale(), [cx, cy] = this.proj.translate();
+    const g = ctx.createRadialGradient(cx - r * .35, cy - r * .4, r * .1, cx, cy, r);
+    g.addColorStop(0, dark ? "#1d4a5e" : "#d4eaf4"); g.addColorStop(1, dark ? "#0a2230" : "#86b6cf");
+    ctx.beginPath(); path({type: "Sphere"}); ctx.fillStyle = g; ctx.fill();
+    ctx.beginPath(); path(this.grat); ctx.strokeStyle = dark ? "rgba(255,255,255,.08)" : "rgba(20,60,80,.12)"; ctx.lineWidth = .7; ctx.stroke();
+    const pal = dark ? POL_D : POL;
+    this.feats.forEach((f, i) => { ctx.beginPath(); path(f); ctx.fillStyle = f === this.sel ? "#3dbb9b" : f === this.hover ? (dark ? "#8fb8aa" : "#fff7d6") : polColor(f, i, dark); ctx.fill(); });
+    ctx.beginPath(); path(this.mesh); ctx.strokeStyle = dark ? "rgba(255,255,255,.35)" : "rgba(40,55,50,.45)"; ctx.lineWidth = .6; ctx.stroke();
+    const sh = ctx.createRadialGradient(cx + r * .3, cy + r * .35, r * .2, cx, cy, r * 1.02);
+    sh.addColorStop(0, "rgba(0,0,0,0)"); sh.addColorStop(1, dark ? "rgba(0,0,0,.45)" : "rgba(10,40,60,.22)");
+    ctx.beginPath(); path({type: "Sphere"}); ctx.fillStyle = sh; ctx.fill();
+    ctx.lineWidth = 1.2; ctx.strokeStyle = dark ? "rgba(120,200,190,.35)" : "rgba(11,106,88,.35)"; ctx.stroke();
+  },
+  async start() {
+    await this.init(); if (this.timer) return;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let last = 0;
+    this.timer = d3.timer(el => { if (this.paused || reduce) { last = el; return; } const r = this.proj.rotate(); this.proj.rotate([r[0] + (el - last) * 0.012, r[1]]); last = el; this.draw(); });
+  },
+  stop() { if (this.timer) { this.timer.stop(); this.timer = null; } }
+};
+
+/* ---------- Country of the day ---------- */
+async function renderDaily() {
+  await ready;
+  const pool = DATA.indep.filter(c => DATA.mapped.has(c.code));
+  const day = Math.floor((Date.now() + 2 * 3600e3) / 864e5);
+  const c = pool[(day * 7919) % pool.length];
+  const nb = c.b.map(b => DATA.c[b]?.n).filter(Boolean);
+  $("#daily").innerHTML = `${flagImg(c.c2, 96, c.n)}
+    <div style="min-width:0"><div class="eyebrow">Kraj dnia · ${new Date().toLocaleDateString("pl-PL", {day: "numeric", month: "long"})}</div><h3>${esc(c.n)}</h3>
+    <div class="facts"><span>Stolica: <b>${esc(c.cap[0] || "—")}</b></span><span>Powierzchnia: <b class="mono">${fmt(c.a)} km²</b></span><span>${SUB[c.sr] || REG[c.r]}</span><span>${nb.length ? "Sąsiedzi: " + nb.length : "Brak granic lądowych"}</span></div></div>
+    <div class="row acts"><button class="btn small primary" type="button" id="dMap">Pokaż na mapie</button><button class="btn small" type="button" id="dAsk">Ciekawostki od GeoBota</button></div>`;
+  refreshFlags($("#daily"));
+  $("#dMap").onclick = () => showOnMap(c.code);
+  $("#dAsk").onclick = () => askBot(`Podaj 5 ciekawostek geograficznych o kraju ${c.n}.`);
+  $("#atlasPic").innerHTML = pickN(pool, 18).map(x => flagImg(x.c2, 30, x.n)).join("");
+  refreshFlags($("#atlasPic"));
+}
+
+/* ---------- Named features: peaks, depths, seas, mountain ranges ---------- */
+const PEAKS = [
+  ["Mount Everest", 27.988, 86.925, 8849], ["K2", 35.88, 76.51, 8611], ["Kanczendzonga", 27.70, 88.15, 8586], ["Nanga Parbat", 35.24, 74.59, 8126], ["Annapurna", 28.60, 83.82, 8091],
+  ["Aconcagua", -32.65, -70.01, 6961], ["Ojos del Salado", -27.11, -68.54, 6893], ["Huascarán", -9.12, -77.60, 6768], ["Chimborazo", -1.47, -78.82, 6263],
+  ["Denali", 63.07, -151.0, 6190], ["Mount Logan", 60.57, -140.40, 5959], ["Pico de Orizaba", 19.03, -97.27, 5636], ["Mount Whitney", 36.58, -118.29, 4421], ["Mauna Kea", 19.82, -155.47, 4207],
+  ["Kilimandżaro", -3.07, 37.35, 5895], ["Mount Kenya", -0.15, 37.31, 5199], ["Ras Daszan", 13.24, 38.37, 4550], ["Tubkal", 31.06, -7.92, 4167],
+  ["Elbrus", 43.35, 42.44, 5642], ["Damawand", 35.95, 52.11, 5610], ["Ararat", 39.70, 44.30, 5137], ["Fudżi", 35.36, 138.73, 3776],
+  ["Masyw Vinsona", -78.53, -85.62, 4892], ["Puncak Jaya", -4.08, 137.18, 4884], ["Mount Cook", -43.59, 170.14, 3724], ["Góra Kościuszki", -36.46, 148.26, 2228],
+  ["Mont Blanc", 45.83, 6.86, 4806], ["Matterhorn", 45.98, 7.66, 4478], ["Grossglockner", 47.07, 12.69, 3798], ["Zugspitze", 47.42, 10.98, 2962],
+  ["Teide", 28.27, -16.64, 3715], ["Mulhacén", 37.05, -3.31, 3479], ["Aneto", 42.63, 0.66, 3404], ["Etna", 37.75, 14.99, 3357], ["Musała", 42.18, 23.58, 2925], ["Olimp", 40.09, 22.36, 2918],
+  ["Gerlach", 49.16, 20.13, 2655], ["Moldoveanu", 45.60, 24.74, 2544], ["Rysy", 49.18, 20.09, 2499], ["Galdhøpiggen", 61.64, 8.31, 2469], ["Howerla", 48.16, 24.50, 2061],
+  ["Babia Góra", 49.57, 19.53, 1725], ["Śnieżka", 50.74, 15.74, 1603], ["Ben Nevis", 56.80, -5.00, 1345],
+];
+const DEPTHS = [
+  ["Rów Mariański", 11.35, 142.2, -10994], ["Rów Tonga", -23.3, -174.7, -10882], ["Rów Kurylsko-Kamczacki", 44.1, 150.4, -10542], ["Rów Portorykański", 19.77, -66.93, -8376],
+  ["Rów Sandwicza Płd.", -55.2, -26.2, -8264], ["Rów Atakamski", -23.4, -71.5, -8065], ["Rów Sundajski", -11.1, 114.9, -7290], ["Głębia Molloya", 79.1, 2.8, -5550],
+  ["Morze Martwe (ląd)", 31.5, 35.5, -430],
+];
+// [name, lat, lon, minZoom, size 1..3]
+const SEAS = [
+  ["OCEAN SPOKOJNY", 8, -150, 0, 3], ["OCEAN SPOKOJNY", -25, -120, 0, 3], ["OCEAN SPOKOJNY", 20, 165, 1.5, 3], ["OCEAN ATLANTYCKI", 28, -42, 0, 3], ["OCEAN ATLANTYCKI", -22, -18, 0, 3],
+  ["OCEAN INDYJSKI", -22, 80, 0, 3], ["OCEAN ARKTYCZNY", 83, 30, 0, 3], ["OCEAN POŁUDNIOWY", -62, 40, 0, 3], ["OCEAN POŁUDNIOWY", -62, -110, 1.5, 3],
+  ["Morze Bałtyckie", 56.6, 19.3, 3, 1], ["Morze Północne", 56, 3, 3, 1], ["Morze Śródziemne", 34.6, 18, 2, 2], ["Morze Czarne", 43.3, 34, 2.5, 1], ["Morze Kaspijskie", 42, 50.6, 3, 1],
+  ["Morze Karaibskie", 15, -75, 2, 2], ["Zatoka Meksykańska", 25, -90, 2, 2], ["Morze Arabskie", 15, 63, 2, 2], ["Zatoka Bengalska", 15, 88, 2, 2], ["Morze Południowochińskie", 13, 114, 2, 2],
+  ["Morze Wschodniochińskie", 29, 126, 3, 1], ["Morze Japońskie", 40, 135, 3, 1], ["Morze Ochockie", 54, 149, 2.5, 1], ["Morze Beringa", 58, -178, 2.5, 2], ["Morze Czerwone", 20, 38.5, 3, 1],
+  ["Zatoka Perska", 26.8, 51.5, 4, 1], ["Morze Tasmana", -40, 160, 2.5, 2], ["Morze Koralowe", -18, 155, 2.5, 2], ["Morze Norweskie", 68, 3, 2.5, 2], ["Morze Barentsa", 74, 40, 2.5, 2],
+  ["Zatoka Hudsona", 60, -85, 2.5, 1], ["Morze Weddella", -72, -45, 2.5, 2], ["Morze Rossa", -75, -175, 2.5, 2], ["Morze Adriatyckie", 43, 15.5, 5, 1], ["Morze Egejskie", 38.5, 25, 5, 1],
+  ["Morze Tyrreńskie", 40, 12, 5, 1], ["Morze Karskie", 75, 65, 3, 1], ["Morze Łaptiewów", 76, 125, 3, 1], ["Kanał Mozambicki", -18, 41, 3, 1], ["Zatoka Gwinejska", 2, 3, 3, 1],
+  ["Morze Arafura", -10, 135, 3, 1], ["Morze Żółte", 35.5, 123, 4, 1], ["Zatoka Botnicka", 63, 20.5, 5, 1], ["Zatoka Biskajska", 45, -4.5, 5, 1], ["Morze Irlandzkie", 53.8, -5.2, 7, 1],
+  ["Morze Labradorskie", 58, -55, 2.5, 1], ["Morze Grenlandzkie", 76, -5, 2.5, 1], ["Morze Filipińskie", 20, 132, 2.5, 2], ["Morze Wschodniosyberyjskie", 74, 165, 3, 1],
+];
+// [name, lat, lon, angle(deg), minZoom, kind: m=mountains, l=lowland/desert]
+const RANGES = [
+  ["HIMALAJE", 28.6, 84.5, -18, 1.5, "m"], ["ANDY", -24, -67.5, 80, 1.5, "m"], ["GÓRY SKALISTE", 45, -112, 58, 1.5, "m"], ["ALPY", 46.6, 10, -8, 2, "m"], ["KARPATY", 48.4, 23.5, -32, 2.5, "m"],
+  ["URAL", 58, 59.6, 88, 2, "m"], ["KAUKAZ", 42.9, 44, -20, 3, "m"], ["ATLAS", 32, -4, -18, 3, "m"], ["PIRENEJE", 42.75, 0.5, -6, 5, "m"], ["APENINY", 42.5, 13.2, 52, 5, "m"],
+  ["GÓRY SKANDYNAWSKIE", 64, 14, 55, 2.5, "m"], ["APPALACHY", 38, -80, 42, 2.5, "m"], ["TIEN-SZAN", 42, 79, -10, 2.5, "m"], ["AŁTAJ", 49, 88, -20, 3, "m"], ["HINDUKUSZ", 35.6, 70.5, -25, 4, "m"],
+  ["KARAKORUM", 35.9, 76.3, -25, 5, "m"], ["ZAGROS", 31, 51, -40, 3.5, "m"], ["GÓRY DYNARSKIE", 44, 17.5, -38, 5, "m"], ["BAŁKANY", 42.75, 25, -5, 6, "m"], ["SUDETY", 50.6, 16.2, -25, 9, "m"],
+  ["TATRY", 49.22, 20.0, 0, 14, "m"], ["WIELKIE GÓRY WODODZIAŁOWE", -28, 151.2, 72, 2.5, "m"], ["DRAKENSBERG", -29.5, 29.3, 55, 4, "m"], ["SIERRA MADRE", 24, -105, 60, 3, "m"],
+  ["WYŻYNA TYBETAŃSKA", 33.5, 88, 0, 2, "l"], ["SAHARA", 23, 10, 0, 1.5, "l"], ["GOBI", 43, 105, 0, 2.5, "l"], ["NIZINA AMAZONKI", -4, -62, 0, 2, "l"], ["KOTLINA KONGA", -1, 22, 0, 3, "l"],
+  ["NIZINA ZACHODNIOSYBERYJSKA", 61, 75, 0, 2.5, "l"], ["NIZINA WSCHODNIOEUROPEJSKA", 54, 38, 0, 2.5, "l"], ["WIELKIE RÓWNINY", 42, -101, 0, 2.5, "l"], ["PUSTYNIA ARABSKA", 21, 47, 0, 3, "l"],
+  ["KALAHARI", -23, 22, 0, 3, "l"], ["WYŻYNA ŚRODKOWOSYBERYJSKA", 63, 103, 0, 2.5, "l"], ["DEKAN", 17, 77.5, 0, 3, "l"], ["PATAGONIA", -45, -69, 0, 3, "l"], ["NIZINA ŚRODKOWOPOLSKA", 52.2, 19, 0, 9, "l"],
+];
+
+/* ---------- Maps ---------- */
+const W = 4096, H = 2048, KPX = W / 360;
+const lx = lon => (lon + 180) * KPX, ly = lat => (90 - lat) * KPX;
+const STYLES = {
+  topo: [
+    {id: "relief", name: "Rzeźba terenu", img: "relief.jpg", hi: {n: "relief", c: 4, r: 2}},
+    {id: "etopo", name: "Wysokości i głębie", img: "etopo.jpg", hi: {n: "etopo", c: 2, r: 1}, legend: true},
+    {id: "hill", name: "Cieniowanie (czarno-białe)", img: "hillshade.jpg", hi: {n: "hill", c: 4, r: 2}, gray: true},
+    {id: "sat", name: "Zdjęcie satelitarne", img: "sat.jpg", hi: {n: "sat", c: 2, r: 1}},
+  ],
+  carto: [
+    {id: "political", name: "Mapa polityczna"},
+    {id: "regions", name: "Kontynenty i regiony"},
+    {id: "physical", name: "Mapa ogólnogeograficzna", img: "relief.jpg", hi: {n: "relief", c: 4, r: 2}, fade: true},
+    {id: "outline", name: "Mapa konturowa (do ćwiczeń)"},
+  ],
+  game: [{id: "outline"}],
+};
+const SW = {political: "linear-gradient(90deg,#f1d79f 33%,#cde2b1 33% 66%,#c6d9ee 66%)", regions: "linear-gradient(90deg,#7fa7d8 25%,#e3b04f 25% 50%,#d9825b 50% 75%,#86c27a 75%)", outline: "#ffffff"};
+const REGC = {Europe: "#86abd9", Asia: "#e6b65a", Africa: "#dc8a62", Americas: "#8cc680", Oceania: "#bd96d4", Antarctic: "#e2e9ec"};
+const imgCache = {};
+const loadImg = src => imgCache[src] ||= new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
+
+class GeoMap {
+  constructor(root, opts) {
+    this.root = root; this.kind = opts.kind; this.game = opts.game; this.onPick = opts.onPick;
+    const carto = this.kind === "carto";
+    const defaults = {borders: true, labels: carto, cities: carto, water: carto, grid: false, names: true, peaks: !carto, shade: true};
+    this.styleIdx = this.game ? 0 : store.get("style:" + this.kind, 0);
+    if (this.styleIdx >= STYLES[this.kind].length) this.styleIdx = 0;
+    this.opt = this.game ? {borders: true, labels: false, cities: false, water: false, grid: false, names: false, peaks: false, shade: false, night: false} : Object.assign(defaults, store.get("opt2:" + this.kind, {}));
+    this.sel = null; this.marks = []; this.t = d3.zoomIdentity; this.measure = null;
+    root.innerHTML = `
+      <canvas aria-label="Mapa świata. Przeciągnij, aby przesunąć; kółkiem myszy lub dwoma palcami przybliż; kliknij kraj."></canvas>
+      ${this.game ? "" : `<div class="panel">
+        <div class="phead"><h2>${this.kind === "topo" ? "Mapy topograficzne" : "Mapy kartograficzne"}</h2><button class="btn small toggle" type="button">Opcje</button></div>
+        <div class="findbox"><input type="search" placeholder="Szukaj kraju lub miasta…" autocomplete="off" aria-label="Szukaj kraju lub miasta"><div class="sugg" hidden></div></div>
+        <div class="seg" role="group" aria-label="Rodzaj mapy"></div>
+        <div class="checks">
+          <label><input type="checkbox" data-o="borders"> Granice</label>
+          <label><input type="checkbox" data-o="labels"> Nazwy państw</label>
+          <label><input type="checkbox" data-o="cities"> Stolice i miasta</label>
+          <label><input type="checkbox" data-o="water"> Rzeki i jeziora</label>
+          <label><input type="checkbox" data-o="names"> Morza i góry</label>
+          <label><input type="checkbox" data-o="peaks"> Szczyty i głębie</label>
+          ${this.kind === "carto" ? '<label><input type="checkbox" data-o="shade"> Cieniowanie terenu</label>' : ""}
+          <label><input type="checkbox" data-o="night"> Dzień i noc (teraz)</label>
+          <label><input type="checkbox" data-o="grid"> Siatka co 15°</label>
+        </div>
+        <div class="legend" hidden><div class="ramp"></div><div class="ends"><span>głębie</span><span>poziom morza</span><span>wysokie góry</span></div></div>
+        <button class="btn small mtool" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17L17 3l4 4L7 21z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/></svg>Zmierz odległość</button>
+        <div class="measure-out" hidden></div>
+      </div>`}
+      <div class="zoom"><button type="button" data-z="1.7" aria-label="Przybliż">+</button><button type="button" data-z="0.6" aria-label="Oddal">−</button><button type="button" data-z="0" aria-label="Cały świat" title="Cały świat" style="font-size:14px">⤢</button>${this.game ? "" : `<button type="button" class="rnd" aria-label="Losowy kraj" title="Losowy kraj"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1.2" fill="currentColor"/><circle cx="15" cy="15" r="1.2" fill="currentColor"/><circle cx="15" cy="9" r="1.2" fill="currentColor"/><circle cx="9" cy="15" r="1.2" fill="currentColor"/></svg></button><button type="button" class="fs" aria-label="Pełny ekran" title="Pełny ekran"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>`}</div>
+      <div class="scalebar"><span></span><i></i></div>
+      ${this.game ? "" : `<div class="coords">—</div><div class="info" hidden></div>`}`;
+    this.canvas = $("canvas", root); this.ctx = this.canvas.getContext("2d");
+    this.info = $(".info", root); this.coords = $(".coords", root);
+    if (!this.game) this.buildPanel();
+    if (!this.game) {
+      $(".rnd", root).onclick = () => { const pool = DATA.indep.filter(c => DATA.mapped.has(c.code)); this.selectCode(pool[Math.floor(Math.random() * pool.length)].code); award("random"); };
+      $(".fs", root).onclick = async () => { try { document.fullscreenElement ? await document.exitFullscreen() : await root.requestFullscreen(); } catch { toast("Pełny ekran nie jest dostępny w tym widoku."); } };
+    }
+    $$(".zoom button[data-z]", root).forEach(b => b.onclick = () => {
+      const z = +b.dataset.z;
+      if (!z) this.fitWorld(true); else d3.select(this.canvas).transition().duration(300).call(this.zoom.scaleBy, z);
+    });
+    this.ready = ready.then(() => this.init());
+  }
+  buildPanel() {
+    const root = this.root, panel = $(".panel", root);
+    if (innerWidth < 760) panel.classList.add("collapsed");
+    $(".toggle", root).onclick = () => panel.classList.toggle("collapsed");
+    STYLES[this.kind].forEach((s, i) => {
+      const b = document.createElement("button"); b.type = "button";
+      const bg = s.img ? "background-image:url(" + s.img + ")" : "background:" + SW[s.id];
+      b.innerHTML = '<span class="sw" style="' + bg + '"></span>' + s.name;
+      b.onclick = () => this.setStyle(i); $(".seg", root).append(b);
+    });
+    $$(".checks input", root).forEach(cb => {
+      cb.checked = !!this.opt[cb.dataset.o];
+      cb.onchange = () => { this.opt[cb.dataset.o] = cb.checked; store.set("opt2:" + this.kind, this.opt); this.draw(); };
+    });
+    $(".mtool", root).onclick = () => this.toggleMeasure();
+    // search with suggestions
+    const inp = $(".findbox input", root), sg = $(".sugg", root);
+    let items = [], on = 0;
+    const show = () => {
+      const q = inp.value.trim().toLowerCase();
+      if (!q) { sg.hidden = true; return; }
+      const cs = DATA.list.filter(c => DATA.mapped.has(c.code) && (c.n.toLowerCase().includes(q) || (c.cap[0] || "").toLowerCase().startsWith(q))).sort((a, b) => a.n.toLowerCase().startsWith(q) ? -1 : b.n.toLowerCase().startsWith(q) ? 1 : 0).slice(0, 6).map(c => ({t: "c", c}));
+      const ci = DATA.cities.filter(x => x[0].toLowerCase().startsWith(q)).slice(0, 5).map(x => ({t: "m", x}));
+      items = cs.concat(ci); on = 0;
+      sg.innerHTML = items.map((it, i) => it.t === "c" ? `<button type="button" data-i="${i}">${flagImg(it.c.c2, 22)}${esc(it.c.n)}<small>kraj</small></button>` : `<button type="button" data-i="${i}">${flagImg(it.x[4], 22)}${esc(it.x[0])}<small>${it.x[5] ? "stolica" : "miasto"}</small></button>`).join("") || `<div class="note" style="padding:8px 10px">Nic nie znaleziono</div>`;
+      sg.hidden = false; refreshFlags(sg); mark();
+      $$("button", sg).forEach(b => b.onmousedown = e => { e.preventDefault(); go(+b.dataset.i); });
+    };
+    const mark = () => $$("button", sg).forEach((b, i) => b.classList.toggle("on", i === on));
+    const go = i => { const it = items[i]; if (!it) return; sg.hidden = true; inp.value = it.t === "c" ? it.c.n : it.x[0]; inp.blur(); it.t === "c" ? this.selectCode(it.c.code) : this.flyCity(it.x); };
+    inp.addEventListener("input", show);
+    inp.addEventListener("focus", show);
+    inp.addEventListener("blur", () => setTimeout(() => sg.hidden = true, 120));
+    inp.addEventListener("keydown", e => {
+      if (e.key === "ArrowDown") { on = Math.min(on + 1, items.length - 1); mark(); e.preventDefault(); }
+      else if (e.key === "ArrowUp") { on = Math.max(on - 1, 0); mark(); e.preventDefault(); }
+      else if (e.key === "Enter") { go(on); e.preventDefault(); }
+      else if (e.key === "Escape") sg.hidden = true;
+    });
+  }
+  build(src) {
+    const path = d3.geoPath(this.proj);
+    // a polygon with reversed winding would cover the whole globe: flip its rings
+    for (const f of src.features) if (!f._ok) {
+      f._ok = true;
+      if (d3.geoArea(f) > 2 * Math.PI) {
+        const g = f.geometry, flip = poly => poly.map(r => r.slice().reverse());
+        if (g.type === "Polygon") g.coordinates = flip(g.coordinates);
+        else if (g.type === "MultiPolygon") g.coordinates = g.coordinates.map(pl => d3.geoArea({type: "Polygon", coordinates: pl}) > 2 * Math.PI ? flip(pl) : pl);
+      }
+    }
+    this.feats = src.features.map((f, i) => {
+      const code = DATA.byNum[f.id]; const c = code && DATA.c[code];
+      return {f, code, c, p: new Path2D(path(f)), i, b: path.bounds(f)};
+    });
+    this.meshP = new Path2D(path(src.mesh));
+    this.landP = new Path2D(path(src.land));
+    if (this.sel) this.sel = this.feats.find(x => x.code === this.sel.code) || null;
+    this.marks = this.marks.map(m => ({...m, x: this.feats.find(x => x.code === m.x.code) || m.x}));
+  }
+  async init() {
+    this.proj = d3.geoEquirectangular().scale(W / (2 * Math.PI)).translate([W / 2, H / 2]).precision(0.2);
+    this.build({features: DATA.features, mesh: DATA.mesh, land: DATA.land});
+    this.gridP = new Path2D(d3.geoPath(this.proj)(d3.geoGraticule().step([15, 15])()));
+    this.eqP = new Path2D(); this.eqP.moveTo(0, H / 2); this.eqP.lineTo(W, H / 2);
+    // water
+    const s = DATA.hydro.scale, rvs = [new Path2D(), new Path2D(), new Path2D()], lk = new Path2D();
+    for (const a of DATA.hydro.rivers) {
+      let len = 0; for (let i = 2; i < a.length; i += 2) len += Math.hypot(a[i] - a[i - 2], a[i + 1] - a[i - 1]) / s;
+      const rv = rvs[len > 9 ? 0 : len > 3.5 ? 1 : 2];
+      rv.moveTo(lx(a[0] / s), ly(a[1] / s)); for (let i = 2; i < a.length; i += 2) rv.lineTo(lx(a[i] / s), ly(a[i + 1] / s));
+    }
+    const rv = rvs;
+    for (const a of DATA.hydro.lakes) { lk.moveTo(lx(a[0] / s), ly(a[1] / s)); for (let i = 2; i < a.length; i += 2) lk.lineTo(lx(a[i] / s), ly(a[i + 1] / s)); lk.closePath(); }
+    this.riverP = rv; this.lakeP = lk;
+    this.hit = document.createElement("canvas").getContext("2d");
+
+    this.zoom = d3.zoom().scaleExtent([0.1, 60]).on("zoom", e => { this.t = e.transform; this.draw(); this.maybeHD(); });
+    d3.select(this.canvas).call(this.zoom).on("dblclick.zoom", null);
+    this.canvas.addEventListener("pointermove", e => this.move(e));
+    this.canvas.addEventListener("pointerleave", () => { if (this.coords) this.coords.textContent = "—"; });
+    let down;
+    this.canvas.addEventListener("pointerdown", e => down = [e.clientX, e.clientY]);
+    this.canvas.addEventListener("click", e => { if (down && Math.hypot(e.clientX - down[0], e.clientY - down[1]) < 6) this.click(e); });
+    new ResizeObserver(() => this.resize()).observe(this.root);
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => this.draw());
+    new MutationObserver(() => this.draw()).observe(document.documentElement, {attributes: true, attributeFilter: ["data-theme"]});
+    this.resize(true);
+    await this.setStyle(this.styleIdx);
+    if (this.game) this.fitWorld(false);
+    else this.view([17, 50], 4);
+  }
+  view([lon, lat], mult) {
+    const k = Math.max(this.minK * mult, this.minK);
+    d3.select(this.canvas).call(this.zoom.transform, d3.zoomIdentity.translate(this.cw / 2 - lx(lon) * k, this.ch / 2 - ly(lat) * k).scale(k));
+  }
+  maybeHD() {
+    if (this.hd || this.t.k < 2.2) return;
+    this.hd = true; loadHD().then(src => { this.build(src); this.draw(); });
+  }
+  resize(first) {
+    const r = this.root.getBoundingClientRect();
+    if (!r.width || !r.height) return;
+    this.cw = r.width; this.ch = r.height; this.dpr = Math.min(devicePixelRatio || 1, 2);
+    this.canvas.width = this.cw * this.dpr; this.canvas.height = this.ch * this.dpr;
+    this.minK = Math.max(this.cw / W, this.ch / H);
+    if (this.zoom) {
+      this.zoom.scaleExtent([this.minK, 60]).translateExtent([[0, 0], [W, H]]).extent([[0, 0], [this.cw, this.ch]]);
+      if (!first) d3.select(this.canvas).call(this.zoom.transform, this.t);
+    }
+    this.draw();
+  }
+  fitWorld(anim) {
+    const k = this.minK, s = d3.select(this.canvas);
+    const t = d3.zoomIdentity.translate((this.cw - W * k) / 2, (this.ch - H * k) / 2).scale(k);
+    (anim ? s.transition().duration(500) : s).call(this.zoom.transform, t);
+  }
+  async setStyle(i) {
+    this.styleIdx = i; if (!this.game) store.set("style:" + this.kind, i);
+    const s = STYLES[this.kind][i];
+    $$(".seg button", this.root).forEach((b, j) => b.setAttribute("aria-pressed", i === j));
+    const lg = $(".legend", this.root); if (lg) lg.hidden = !s.legend;
+    this.img = s.img ? await loadImg(s.img) : null;
+    this.draw();
+  }
+  // high-resolution tiles: drawn on top of the base image once loaded, only those in view
+  drawTiles(hi) {
+    const {ctx, t} = this, tw = W / hi.c, th = H / hi.r;
+    const x0 = -t.x / t.k, y0 = -t.y / t.k, x1 = x0 + this.cw / t.k, y1 = y0 + this.ch / t.k;
+    for (let r = 0; r < hi.r; r++) for (let c = 0; c < hi.c; c++) {
+      if ((c + 1) * tw < x0 || c * tw > x1 || (r + 1) * th < y0 || r * th > y1) continue;
+      const src = `hi/${hi.n}_${r}_${c}.jpg`, done = this.tiles[src];
+      if (done) ctx.drawImage(done, c * tw, r * th, tw + 0.5, th + 0.5);
+      else if (done === undefined) { this.tiles[src] = null; loadImg(src).then(im => { this.tiles[src] = im || false; if (im) this.draw(); }); }
+    }
+  }
+  raster(img, hi) {
+    this.ctx.imageSmoothingQuality = "high";
+    this.ctx.drawImage(img, 0, 0, W, H);
+    if (hi && this.t.k * this.dpr > 1.15) this.drawTiles(hi);
+  }
+  draw() {
+    if (!this.feats || !this.cw) return;
+    const {ctx, t, dpr} = this, s = STYLES[this.kind][this.styleIdx], dark = isDark(), px = 1 / t.k;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = css("--ocean"); ctx.fillRect(0, 0, this.cw, this.ch);
+    ctx.setTransform(dpr * t.k, 0, 0, dpr * t.k, dpr * t.x, dpr * t.y);
+    this.tiles ||= {};
+    if (this.img) {
+      this.raster(this.img, s.hi);
+      if (s.fade) { ctx.fillStyle = dark ? "rgba(10,20,18,.35)" : "rgba(255,255,255,.18)"; ctx.fillRect(0, 0, W, H); }
+      else if (dark && s.id !== "sat") { ctx.fillStyle = "rgba(0,0,0,.18)"; ctx.fillRect(0, 0, W, H); }
+    } else if (s.id === "outline") {
+      ctx.fillStyle = css("--land"); ctx.fill(this.landP);
+    } else {
+      for (const x of this.feats) {
+        if (s.id === "political") ctx.fillStyle = polColor(x.f, x.i, dark);
+        else { ctx.fillStyle = REGC[x.c?.r] || "#ccc"; if (dark) ctx.globalAlpha = .55; }
+        ctx.fill(x.p); ctx.globalAlpha = 1;
+      }
+    }
+    const z = t.k / this.minK;
+    // terrain shading on flat-coloured maps
+    if (!this.img && this.opt.shade && s.id !== "outline" && !this.game && this.hill !== false) {
+      if (!this.hill) { this.hill = false; loadImg("hillshade.jpg").then(im => { this.hill = im || false; this.draw(); }); }
+      else { ctx.save(); ctx.clip(this.landP); ctx.globalCompositeOperation = "multiply"; ctx.globalAlpha = (dark ? .32 : .42) * Math.max(0.35, Math.min(1, (34 - z) / 22)); this.raster(this.hill, {n: "hill", c: 4, r: 2}); ctx.restore(); }
+    }
+    // coastline
+    if (!this.img || s.fade) { ctx.strokeStyle = css("--coast"); ctx.globalAlpha = .9; ctx.lineWidth = px * 0.9; ctx.stroke(this.landP); ctx.globalAlpha = 1; }
+    if (this.opt.water) {
+      ctx.fillStyle = s.id === "sat" ? "rgba(20,50,90,.9)" : css("--ocean"); ctx.fill(this.lakeP);
+      ctx.strokeStyle = s.id === "sat" ? "rgba(120,190,240,.8)" : css("--water"); ctx.lineJoin = "round"; ctx.lineCap = "round";
+      const lv = z < 3 ? 1 : z < 7 ? 2 : 3;
+      for (let i = 0; i < lv; i++) { ctx.lineWidth = px * (i === 0 ? Math.min(1.6, 0.8 + z * 0.06) : i === 1 ? 0.9 : 0.6); ctx.globalAlpha = i === 2 ? .7 : 1; ctx.stroke(this.riverP[i]); }
+      ctx.globalAlpha = 1; ctx.lineWidth = px * 0.7; ctx.stroke(this.lakeP);
+    }
+    if (this.opt.grid) {
+      ctx.strokeStyle = this.img ? "rgba(255,255,255,.5)" : css("--border"); ctx.globalAlpha = this.img ? 1 : .35; ctx.lineWidth = px * 0.8; ctx.stroke(this.gridP);
+      ctx.globalAlpha = .9; ctx.strokeStyle = css("--accent-2"); ctx.lineWidth = px * 1.4; ctx.stroke(this.eqP); ctx.globalAlpha = 1;
+    }
+    if (this.opt.night) this.drawNight(px);
+    if (s.id === "outline") { ctx.strokeStyle = css("--border"); ctx.lineWidth = px * 0.9; ctx.stroke(this.landP); }
+    if (this.opt.borders) {
+      ctx.strokeStyle = this.img ? (s.id === "sat" ? "rgba(255,255,255,.75)" : "rgba(50,35,25,.6)") : css("--border");
+      ctx.lineWidth = px * (this.img ? 0.9 : 0.7); ctx.stroke(this.meshP);
+    }
+    for (const m of this.marks) { ctx.fillStyle = m.fill; ctx.fill(m.x.p); ctx.strokeStyle = m.stroke; ctx.lineWidth = px * 2.2; ctx.stroke(m.x.p); }
+    if (this.sel) { ctx.fillStyle = "rgba(61,187,155,.35)"; ctx.fill(this.sel.p); ctx.strokeStyle = css("--accent"); ctx.lineWidth = px * 2.4; ctx.stroke(this.sel.p); }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    this.placed = [];
+    if (this.opt.peaks) this.drawPeaks(s);
+    if (this.opt.labels) this.drawLabels(s);
+    if (this.opt.names) this.drawNames(s, "ranges");
+    if (this.opt.cities) this.drawCities(s);
+    if (this.opt.names) this.drawNames(s, "seas");
+    this.drawMeasure(); this.drawPins(); this.drawScale();
+  }
+  scr(lon, lat) { return [lx(lon) * this.t.k + this.t.x, ly(lat) * this.t.k + this.t.y]; }
+  free(box) { if (this.placed.some(b => box[0] < b[2] && box[2] > b[0] && box[1] < b[3] && box[3] > b[1])) return false; this.placed.push(box); return true; }
+  text(str, x, y, font, onImg, align = "center") {
+    const {ctx} = this; ctx.font = font; ctx.textAlign = align; ctx.textBaseline = "middle"; ctx.lineJoin = "round";
+    ctx.strokeStyle = onImg ? "rgba(0,0,0,.75)" : css("--halo"); ctx.lineWidth = 3; ctx.strokeText(str, x, y);
+    ctx.fillStyle = onImg ? "#fff" : css("--label"); ctx.fillText(str, x, y);
+  }
+  drawLabels(s) {
+    const {ctx, t} = this, z = t.k / this.minK;
+    const minArea = 1.2e6 / Math.pow(z, 2.2);
+    const onImg = s.id === "sat";
+    for (const x of this.feats.filter(x => x.c && x.c.a >= minArea).sort((a, b) => b.c.a - a.c.a)) {
+      const [sx, sy] = this.scr(x.c.ll[1], x.c.ll[0]);
+      if (sx < -60 || sy < -20 || sx > this.cw + 60 || sy > this.ch + 20) continue;
+      const big = x.c.a > 1.5e6, label = x.c.n.toUpperCase(), font = `${big ? 700 : 600} ${big ? 12.5 : 10.5}px "Atkinson Hyperlegible", system-ui, sans-serif`;
+      ctx.font = font; ctx.letterSpacing = big ? "1.6px" : "0.8px"; const w = ctx.measureText(label).width;
+      if (!this.free([sx - w / 2 - 3, sy - 8, sx + w / 2 + 3, sy + 8])) { ctx.letterSpacing = "0px"; continue; }
+      this.text(label, sx, sy, font, onImg); ctx.letterSpacing = "0px";
+    }
+  }
+  // night side of the Earth right now (approximate solar position)
+  drawNight(px) {
+    const now = new Date(), {ctx} = this;
+    if (!this.nightAt || now - this.nightAt > 60000) {
+      const start = Date.UTC(now.getUTCFullYear(), 0, 0), doy = (now - start) / 864e5;
+      const g = 2 * Math.PI / 365 * (doy - 1 + (now.getUTCHours() - 12) / 24);
+      const decl = (0.006918 - 0.399912 * Math.cos(g) + 0.070257 * Math.sin(g) - 0.006758 * Math.cos(2 * g) + 0.000907 * Math.sin(2 * g)) * 180 / Math.PI;
+      const eot = 229.18 * (0.000075 + 0.001868 * Math.cos(g) - 0.032077 * Math.sin(g) - 0.014615 * Math.cos(2 * g) - 0.040849 * Math.sin(2 * g));
+      const utcMin = now.getUTCHours() * 60 + now.getUTCMinutes();
+      const sunLon = -((utcMin + eot) / 4 - 180);
+      const anti = [sunLon > 0 ? sunLon - 180 : sunLon + 180, -decl], path = d3.geoPath(this.proj);
+      this.nightP = [96, 93, 90].map(r => new Path2D(path(d3.geoCircle().center(anti).radius(r)())));
+      this.sunP = [sunLon, decl]; this.nightAt = now;
+      clearTimeout(this.nightT); this.nightT = setTimeout(() => this.opt.night && this.draw(), 60000);
+    }
+    ctx.fillStyle = "rgba(4,14,34,.16)"; for (const p of this.nightP) ctx.fill(p);
+    const [sx, sy] = [lx(this.sunP[0]), ly(this.sunP[1])];
+    ctx.beginPath(); ctx.arc(sx, sy, 9 * px, 0, 7); ctx.fillStyle = "#ffcf3f"; ctx.fill(); ctx.lineWidth = 2 * px; ctx.strokeStyle = "#fff"; ctx.stroke();
+  }
+  drawNames(s, which) {
+    const {ctx, t} = this, z = t.k / this.minK, onImg = s.id === "sat";
+    if (which !== "ranges") for (const [n, lat, lon, mz, size] of SEAS) {
+      if (z < mz + 1) continue;
+      const [sx, sy] = this.scr(lon, lat); if (sx < -150 || sy < -20 || sx > this.cw + 150 || sy > this.ch + 20) continue;
+      const font = `italic ${size === 3 ? 600 : 400} ${size === 3 ? 15 : size === 2 ? 13 : 12}px "Atkinson Hyperlegible", Georgia, serif`;
+      ctx.font = font; ctx.letterSpacing = size === 3 ? "4px" : "0.5px"; const w = ctx.measureText(n).width;
+      if (this.free([sx - w / 2, sy - 9, sx + w / 2, sy + 9])) {
+        ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        if (onImg) { ctx.strokeStyle = "rgba(0,0,0,.55)"; ctx.lineWidth = 3; ctx.strokeText(n, sx, sy); }
+        ctx.fillStyle = onImg ? "#cfe8ff" : css("--sea-label"); ctx.fillText(n, sx, sy);
+      }
+      ctx.letterSpacing = "0px";
+    }
+    if (which !== "seas") for (const [n, lat, lon, ang, mz, kind] of RANGES) {
+      if (z < mz + 1 || (kind === "l" && z > mz * 6 + 8)) continue;
+      const [sx, sy] = this.scr(lon, lat); if (sx < -150 || sy < -150 || sx > this.cw + 150 || sy > this.ch + 150) continue;
+      const font = `${kind === "m" ? 700 : 600} ${kind === "m" ? 11.5 : 11}px "Atkinson Hyperlegible", system-ui, sans-serif`;
+      ctx.font = font; ctx.letterSpacing = "2.5px"; const w = ctx.measureText(n).width;
+      const a = ang * Math.PI / 180, hw = Math.abs(Math.cos(a)) * w / 2 + 8, hh = Math.abs(Math.sin(a)) * w / 2 + 8;
+      if (this.free([sx - hw, sy - hh, sx + hw, sy + hh])) {
+        ctx.save(); ctx.translate(sx, sy); ctx.rotate(-a); ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.strokeStyle = onImg ? "rgba(0,0,0,.5)" : css("--halo"); ctx.lineWidth = 3; ctx.globalAlpha = .9; ctx.strokeText(n, 0, 0);
+        ctx.fillStyle = onImg ? "#ffe9c9" : css("--relief-label"); ctx.fillText(n, 0, 0); ctx.restore();
+      }
+      ctx.letterSpacing = "0px";
+    }
+  }
+  drawPeaks(s) {
+    const {ctx, t} = this, z = t.k / this.minK, onImg = s.id === "sat";
+    const min = z < 2 ? 6500 : z < 4 ? 5000 : z < 8 ? 3500 : z < 14 ? 2000 : 0;
+    const items = PEAKS.filter(p => p[3] >= min).concat(z >= 2 ? DEPTHS.filter(d => z >= 3 || d[3] < -9000) : []);
+    for (const [n, lat, lon, h] of items) {
+      const [sx, sy] = this.scr(lon, lat); if (sx < -60 || sy < -20 || sx > this.cw + 60 || sy > this.ch + 20) continue;
+      const font = `600 11px "Atkinson Hyperlegible", system-ui, sans-serif`, hf = `500 10px "JetBrains Mono", monospace`;
+      const hs = (h > 0 ? "" : "") + fmt(h) + " m";
+      ctx.font = font; const w = Math.max(ctx.measureText(n).width, 40);
+      if (!this.free([sx - 6, sy - 9, sx + 10 + w, sy + 16])) continue;
+      ctx.beginPath();
+      if (h > 0) { ctx.moveTo(sx, sy - 6); ctx.lineTo(sx + 5.5, sy + 4); ctx.lineTo(sx - 5.5, sy + 4); ctx.closePath(); ctx.fillStyle = onImg ? "#fff" : "#a2421f"; }
+      else { ctx.moveTo(sx, sy + 6); ctx.lineTo(sx + 5.5, sy - 4); ctx.lineTo(sx - 5.5, sy - 4); ctx.closePath(); ctx.fillStyle = onImg ? "#cfe8ff" : "#1d5e8c"; }
+      ctx.fill(); ctx.lineWidth = 1.2; ctx.strokeStyle = onImg ? "rgba(0,0,0,.7)" : css("--halo"); ctx.stroke();
+      this.text(n, sx + 8, sy - 3, font, onImg, "left");
+      this.text(hs, sx + 8, sy + 9, hf, onImg, "left");
+    }
+  }
+  drawCities(s) {
+    const {ctx, t} = this, z = t.k / this.minK;
+    const minPop = z < 2 ? 8e6 : z < 4 ? 2.5e6 : z < 8 ? 1e6 : z < 16 ? 4e5 : 0;
+    const onImg = s.id === "sat";
+    for (const c of DATA.cities) {
+      const cap = c[5] === 1;
+      if (!cap && c[3] < minPop) continue;
+      if (cap && z < 2.5 && c[3] < 3e6) continue;
+      const [sx, sy] = this.scr(c[2], c[1]);
+      if (sx < -40 || sy < -10 || sx > this.cw + 40 || sy > this.ch + 10) continue;
+      const font = `${cap ? 700 : 400} ${cap ? 12 : 11}px "Atkinson Hyperlegible", system-ui, sans-serif`;
+      ctx.font = font; const w = ctx.measureText(c[0]).width;
+      if (!this.free([sx - 4, sy - 7, sx + 8 + w, sy + 7])) continue;
+      ctx.beginPath();
+      if (cap) { ctx.rect(sx - 3.5, sy - 3.5, 7, 7); ctx.fillStyle = onImg ? "#fff" : css("--city"); ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = onImg ? "#000" : css("--halo"); ctx.stroke(); }
+      else { ctx.arc(sx, sy, 3, 0, 7); ctx.fillStyle = onImg ? "#fff" : css("--city"); ctx.fill(); ctx.lineWidth = 1.2; ctx.strokeStyle = onImg ? "#000" : css("--halo"); ctx.stroke(); }
+      this.text(c[0], sx + 7, sy, font, onImg, "left");
+    }
+  }
+  drawPins() {
+    if (!this.pins) return;
+    const {ctx} = this;
+    for (const p of this.pins) {
+      const [sx, sy] = this.scr(p.lon, p.lat);
+      ctx.beginPath(); ctx.arc(sx, sy, 7, 0, 7); ctx.fillStyle = p.color; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = "#fff"; ctx.stroke();
+    }
+    if (this.pins.length === 2 && this.pinLine) {
+      ctx.setLineDash([6, 5]); ctx.strokeStyle = css("--label"); ctx.lineWidth = 2; this.gcLine(this.pins[0], this.pins[1]); ctx.setLineDash([]);
+    }
+  }
+  gcLine(a, b) {
+    const {ctx} = this, ip = d3.geoInterpolate([a.lon, a.lat], [b.lon, b.lat]);
+    ctx.beginPath(); let prev = null;
+    for (let i = 0; i <= 96; i++) {
+      const [lo, la] = ip(i / 96), [sx, sy] = this.scr(lo, la);
+      if (prev == null || Math.abs(lo - prev) > 180) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+      prev = lo;
+    }
+    ctx.stroke();
+  }
+  drawMeasure() {
+    const m = this.measure; if (!m) return;
+    const {ctx} = this;
+    if (m.pts.length === 2) { ctx.strokeStyle = css("--accent-2"); ctx.lineWidth = 3; this.gcLine(m.pts[0], m.pts[1]); }
+    m.pts.forEach(p => { const [sx, sy] = this.scr(p.lon, p.lat); ctx.beginPath(); ctx.arc(sx, sy, 6, 0, 7); ctx.fillStyle = css("--accent-2"); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = "#fff"; ctx.stroke(); });
+    if (m.pts.length === 2) {
+      const mid = d3.geoInterpolate([m.pts[0].lon, m.pts[0].lat], [m.pts[1].lon, m.pts[1].lat])(.5), [sx, sy] = this.scr(mid[0], mid[1]);
+      this.text(fmt(m.km) + " km", sx, sy - 14, `700 14px "JetBrains Mono", monospace`, false);
+    }
+  }
+  drawScale() {
+    const el = $(".scalebar", this.root); if (!el) return;
+    const lat = this.proj.invert(this.t.invert([this.cw / 2, this.ch / 2]))[1];
+    const kmPerPx = (40075 * Math.cos(lat * Math.PI / 180) / 360) / (KPX * this.t.k);
+    const target = kmPerPx * 110, p = Math.pow(10, Math.floor(Math.log10(target))), n = [1, 2, 5, 10].find(v => v * p >= target / 1.6) * p;
+    $("span", el).textContent = (n >= 1 ? fmt(n) : n.toFixed(1)) + " km"; $("i", el).style.width = (n / kmPerPx) + "px";
+  }
+  toggleMeasure() {
+    const btn = $(".mtool", this.root), out = $(".measure-out", this.root);
+    if (this.measure) { this.measure = null; out.hidden = true; btn.classList.remove("primary"); this.canvas.classList.remove("measuring"); this.draw(); return; }
+    this.measure = {pts: []}; btn.classList.add("primary"); out.hidden = false; out.textContent = "Kliknij pierwszy punkt na mapie."; this.canvas.classList.add("measuring");
+  }
+  world(e) { const r = this.canvas.getBoundingClientRect(); return this.t.invert([e.clientX - r.left, e.clientY - r.top]); }
+  pick([wx, wy]) {
+    for (const x of this.feats) { const b = x.b; if (wx < b[0][0] || wx > b[1][0] || wy < b[0][1] || wy > b[1][1]) continue; if (this.hit.isPointInPath(x.p, wx, wy)) return x; }
+    return null;
+  }
+  move(e) {
+    if (!this.proj || !this.coords) return;
+    const w = this.world(e), [lon, lat] = this.proj.invert(w);
+    if (Math.abs(lat) > 90) return;
+    const hit = this.pick(w);
+    this.coords.textContent = `${Math.abs(lat).toFixed(2)}° ${lat >= 0 ? "N" : "S"}  ${Math.abs(lon).toFixed(2)}° ${lon >= 0 ? "E" : "W"}${hit?.c ? "  ·  " + hit.c.n : ""}`;
+    if (!this.measure) this.canvas.style.cursor = hit ? "pointer" : "";
+  }
+  click(e) {
+    const w = this.world(e), [lon, lat] = this.proj.invert(w), x = this.pick(w);
+    if (this.game) { this.onPick && this.onPick({lon, lat}, x); return; }
+    if (this.measure) {
+      const m = this.measure, out = $(".measure-out", this.root);
+      if (m.pts.length === 2) m.pts = [];
+      m.pts.push({lon, lat});
+      if (m.pts.length === 2) {
+        m.km = d3.geoDistance([m.pts[0].lon, m.pts[0].lat], [m.pts[1].lon, m.pts[1].lat]) * 6371;
+        out.innerHTML = `Odległość (po łuku koła wielkiego): <b>${fmt(m.km)} km</b><br><span class="note">Kliknij znowu, aby mierzyć od nowa.</span>`;
+        award("measure");
+      } else out.textContent = "Kliknij drugi punkt.";
+      this.draw(); return;
+    }
+    if (x?.c) this.select(x, false); else { this.sel = null; if (this.info) this.info.hidden = true; this.draw(); }
+  }
+  selectCode(code) { const x = this.feats.find(f => f.code === code); if (x) this.select(x, true); }
+  flyTo(b, ll) {
+    let [[x0, y0], [x1, y1]] = b;
+    if (x1 - x0 > W * 0.6 && ll) { const px = lx(ll[1]), py = ly(ll[0]); x0 = px - 300; x1 = px + 300; y0 = py - 150; y1 = py + 150; }
+    const k = Math.min(60, Math.max(this.minK, 0.7 * Math.min(this.cw / (x1 - x0 + 20), this.ch / (y1 - y0 + 20))));
+    d3.select(this.canvas).transition().duration(750).call(this.zoom.transform, d3.zoomIdentity.translate(this.cw / 2 - k * (x0 + x1) / 2, this.ch / 2 - k * (y0 + y1) / 2).scale(k));
+  }
+  flyCity(c) {
+    if (!this.opt.cities) { this.opt.cities = true; const cb = $('.checks input[data-o="cities"]', this.root); if (cb) cb.checked = true; }
+    const px = lx(c[2]), py = ly(c[1]), k = Math.max(this.minK * 18, 3);
+    d3.select(this.canvas).transition().duration(750).call(this.zoom.transform, d3.zoomIdentity.translate(this.cw / 2 - k * px, this.ch / 2 - k * py).scale(k));
+    const code = DATA.by2[c[4]]; if (code) { const x = this.feats.find(f => f.code === code); if (x) { this.sel = x; this.showInfo(x); } }
+  }
+  select(x, fly) {
+    this.sel = x; sawCountry(x.code); this.showInfo(x);
+    if (fly) this.flyTo(x.b, x.c.ll); else this.draw();
+  }
+  showInfo(x) {
+    if (!this.info) return;
+    const c = x.c, nb = c.b.filter(b => DATA.c[b]);
+    const cities = DATA.cities.filter(m => m[4] === c.c2).slice(0, 4);
+    this.info.innerHTML = `
+      <button class="close" type="button" aria-label="Zamknij">×</button>
+      <div class="head">${flagImg(c.c2, 58, "Flaga: " + c.n)}<div><h3>${esc(c.n)}</h3><div class="note">${SUB[c.sr] || REG[c.r] || c.r}${c.ind ? "" : " · terytorium zależne"}</div></div></div>
+      <dl>
+        <dt>Stolica</dt><dd>${esc(c.cap[0] || "—")}</dd>
+        <dt>Powierzchnia</dt><dd class="mono">${fmt(c.a)} km²</dd>
+        <dt>Ludność</dt><dd>${c.p ? `<span class="mono">${fmt(c.p)}</span> <span class="note">(${c.py})</span>` : "brak danych"}</dd>
+        ${c.p && c.a >= 1 ? `<dt>Gęstość</dt><dd><span class="mono">${fmt(c.p / c.a)}</span> os./km²</dd>` : ""}
+        <dt>Ludność stolicy</dt><dd>${c.cp ? `<span class="mono">${fmt(c.cp)}</span> <span class="note">(${c.cpy})</span>` : "brak danych"}</dd>
+        <dt>Pow. stolicy</dt><dd>${c.ca ? `<span class="mono">${c.ca >= 10 ? fmt(c.ca) : c.ca.toLocaleString("pl-PL", {maximumFractionDigits: 2})}</span> km²` : "brak danych"}</dd>
+        <dt>Języki</dt><dd>${esc(c.lang.join(", ") || "—")}</dd>
+        <dt>Waluta</dt><dd>${esc(c.cur[0] || "—")}</dd>
+        <dt>Morze</dt><dd>${c.lk ? "brak dostępu do morza" : "ma dostęp do morza"}</dd>
+        <dt>Środek</dt><dd class="mono" style="font-size:13px">${Math.abs(c.ll[0])}° ${c.ll[0] >= 0 ? "N" : "S"}, ${Math.abs(c.ll[1])}° ${c.ll[1] >= 0 ? "E" : "W"}</dd>
+        ${cities.length ? `<dt>Duże miasta</dt><dd>${cities.map(m => esc(m[0])).join(", ")}</dd>` : ""}
+        <dt>Sąsiedzi</dt><dd class="chipset">${nb.length ? nb.map(b => `<button class="chip" type="button" data-c="${b}">${flagImg(DATA.c[b].c2, 18)}${esc(DATA.c[b].n)}</button>`).join("") : "brak granic lądowych"}</dd>
+      </dl>
+      <div class="row"><button class="btn small primary ask" type="button">Zapytaj GeoBota</button><button class="btn small cmp" type="button">Porównaj w atlasie</button></div>`;
+    this.info.hidden = false; refreshFlags(this.info);
+    $(".close", this.info).onclick = () => { this.sel = null; this.info.hidden = true; this.draw(); };
+    $$(".chip", this.info).forEach(b => b.onclick = () => this.selectCode(b.dataset.c));
+    $(".ask", this.info).onclick = () => askBot(`Opowiedz mi o geografii kraju ${c.n}: położenie, ukształtowanie terenu, klimat, najważniejsze rzeki i ciekawostki.`);
+    $(".cmp", this.info).onclick = () => { Atlas.pendingA = c.code; location.hash = "atlas"; };
+  }
+}
+
+
+/* ---------- Glossary ---------- */
+const GLOSS = [
+  ["Archipelag", "Grupa wysp położonych blisko siebie, np. Archipelag Malajski czy Kanary."],
+  ["Atol", "Pierścieniowa wyspa koralowa otaczająca płytką lagunę, typowa dla ciepłych mórz tropikalnych."],
+  ["Azymut", "Kąt między kierunkiem północy a kierunkiem do danego punktu, mierzony zgodnie z ruchem wskazówek zegara (0–360°)."],
+  ["Cieśnina", "Wąski pas wody łączący dwa morza lub ocean z morzem, np. Cieśnina Gibraltarska."],
+  ["Delta", "Ujście rzeki rozgałęzione na wiele odnóg, zbudowane z osadów naniesionych przez rzekę, np. delta Nilu."],
+  ["Depresja", "Obszar lądu położony poniżej poziomu morza, np. okolice Morza Martwego (ok. −430 m)."],
+  ["Długość geograficzna", "Kąt między południkiem zerowym (Greenwich) a południkiem danego miejsca, od 0° do 180° na wschód (E) lub zachód (W)."],
+  ["Dorzecze", "Obszar, z którego wody spływają do jednej rzeki głównej i jej dopływów."],
+  ["Erozja", "Niszczenie i wynoszenie skał oraz gleby przez wodę, wiatr, lodowiec lub fale morskie."],
+  ["Estuarium", "Lejkowate ujście rzeki do morza, poszerzane przez pływy, np. ujście Tamizy."],
+  ["Fen (halny)", "Ciepły, suchy i porywisty wiatr wiejący po zawietrznej stronie gór; w Tatrach nazywany halnym."],
+  ["Fiord", "Długa, wąska i głęboka zatoka o stromych zboczach, powstała w dolinie wyżłobionej przez lodowiec; typowa dla Norwegii."],
+  ["Gejzer", "Gorące źródło okresowo wyrzucające w górę słup wody i pary, np. na Islandii i w Parku Yellowstone."],
+  ["Izobara", "Linia na mapie łącząca punkty o jednakowym ciśnieniu atmosferycznym."],
+  ["Izoterma", "Linia na mapie łącząca punkty o jednakowej temperaturze powietrza."],
+  ["Klimat", "Wieloletni, typowy przebieg pogody na danym obszarze (zwykle z co najmniej 30 lat)."],
+  ["Koło podbiegunowe", "Równoleżnik ok. 66°34′ N lub S; poza nim występuje dzień polarny i noc polarna."],
+  ["Kontynent", "Duży, zwarty obszar lądu wraz z przybrzeżnymi wyspami. W polskiej tradycji wyróżnia się 7 kontynentów."],
+  ["Kras", "Zjawiska powstające przez rozpuszczanie skał wapiennych przez wodę: jaskinie, lejki, stalaktyty i stalagmity."],
+  ["Lodowiec", "Masa lodu powstała z przekształconego śniegu, powoli spływająca pod własnym ciężarem."],
+  ["Meander", "Zakole rzeki; rzeki nizinne płyną zwykle krętym, meandrującym korytem."],
+  ["Monsun", "Wiatr zmieniający kierunek sezonowo: latem wieje z oceanu i przynosi ulewy, zimą wieje z lądu i jest suchy."],
+  ["Morena", "Wał lub pagórek ze żwiru, piasku i głazów pozostawiony przez lodowiec."],
+  ["Nizina", "Obszar o niewielkich różnicach wysokości, położony do 300 m n.p.m."],
+  ["Odwzorowanie kartograficzne", "Matematyczny sposób przeniesienia kulistej powierzchni Ziemi na płaską mapę; każde odwzorowanie coś zniekształca."],
+  ["Płyta tektoniczna", "Ogromny fragment litosfery przesuwający się po płaszczu Ziemi o kilka centymetrów rocznie."],
+  ["Pogoda", "Stan atmosfery w danym miejscu i czasie: temperatura, opady, wiatr, zachmurzenie."],
+  ["Południk", "Połowa okręgu łącząca biegun północny z południowym; wyznacza kierunek północ–południe."],
+  ["Poziomica (warstwica)", "Linia na mapie łącząca punkty o tej samej wysokości; im gęściej położone, tym bardziej stromy teren."],
+  ["Półwysep", "Część lądu z trzech stron otoczona wodą, np. Półwysep Helski czy Półwysep Iberyjski."],
+  ["Pustynia", "Obszar o bardzo małych opadach i ubogiej roślinności; może być gorąca (Sahara) lub zimna (Antarktyda)."],
+  ["Równik", "Najdłuższy równoleżnik (0°), dzielący Ziemię na półkulę północną i południową."],
+  ["Równoleżnik", "Okrąg na powierzchni Ziemi łączący punkty o tej samej szerokości geograficznej."],
+  ["Rów oceaniczny", "Długie, wąskie i bardzo głębokie zagłębienie dna oceanu w strefie subdukcji, np. Rów Mariański."],
+  ["Rzeźba terenu", "Ukształtowanie powierzchni Ziemi: góry, wyżyny, niziny, doliny i inne formy."],
+  ["Sawanna", "Trawiasta formacja roślinna z rozproszonymi drzewami, w klimacie z porą suchą i deszczową, np. w Afryce Wschodniej."],
+  ["Skala mapy", "Stosunek odległości na mapie do odległości w terenie, np. 1:100 000 oznacza, że 1 cm na mapie to 1 km w terenie."],
+  ["Strefa czasowa", "Obszar o jednakowym czasie urzędowym; teoretycznie co 15° długości geograficznej czas zmienia się o 1 godzinę."],
+  ["Subdukcja", "Wsuwanie się jednej płyty tektonicznej pod drugą; towarzyszą jej rowy oceaniczne, trzęsienia ziemi i wulkany."],
+  ["Szerokość geograficzna", "Kąt między płaszczyzną równika a kierunkiem do danego miejsca, od 0° do 90° na północ (N) lub południe (S)."],
+  ["Tajga", "Rozległe lasy iglaste strefy umiarkowanej chłodnej, np. w Syberii i Kanadzie."],
+  ["Tsunami", "Seria olbrzymich fal morskich wywołanych najczęściej podmorskim trzęsieniem ziemi."],
+  ["Tundra", "Bezleśny obszar w klimacie polarnym i subpolarnym, z mchami, porostami i wieczną zmarzliną."],
+  ["Wododział", "Granica między dorzeczami, zwykle biegnąca grzbietami wzniesień."],
+  ["Wulkan", "Miejsce, w którym magma wydobywa się na powierzchnię Ziemi jako lawa, gazy i popioły."],
+  ["Wyżyna", "Rozległy obszar położony powyżej 300 m n.p.m., o łagodnych formach terenu, np. Wyżyna Lubelska."],
+  ["Zatoka", "Część morza lub jeziora wcinająca się w ląd, np. Zatoka Gdańska."],
+  ["Zlewisko", "Obszar, z którego wody spływają do jednego morza lub oceanu; Polska leży niemal w całości w zlewisku Bałtyku."],
+  ["Zwrotnik", "Równoleżnik ok. 23°26′ N (Raka) lub S (Koziorożca); tam Słońce raz w roku góruje w zenicie."],
+];
+let glossLetter = "";
+function renderGloss() {
+  const q = $("#glossQ").value.trim().toLowerCase();
+  const letters = [...new Set(GLOSS.map(g => g[0][0].toUpperCase()))];
+  $("#glossL").innerHTML = `<button type="button" data-l="" aria-pressed="${!glossLetter}">Wszystkie</button>` + letters.map(l => `<button type="button" data-l="${l}" aria-pressed="${glossLetter === l}">${l}</button>`).join("");
+  $$("#glossL button").forEach(b => b.onclick = () => { glossLetter = b.dataset.l; renderGloss(); });
+  const rows = GLOSS.filter(([t, d]) => (!glossLetter || t[0].toUpperCase() === glossLetter) && (!q || t.toLowerCase().includes(q) || d.toLowerCase().includes(q)));
+  $("#gloss").innerHTML = rows.map(([t, d]) => `<div class="term"><b>${esc(t)}</b><p>${esc(d)}</p><button type="button" data-t="${esc(t)}">Zapytaj GeoBota o więcej →</button></div>`).join("") || `<p class="note">Brak takiego pojęcia. Zapytaj o nie GeoBota.</p>`;
+  $$("#gloss .term button").forEach(b => b.onclick = () => askBot(`Wyjaśnij pojęcie geograficzne „${b.dataset.t}” z przykładami z Polski i świata.`));
+}
+
+/* ---------- Did you know? (computed from the data) ---------- */
+function buildFacts() {
+  const I = DATA.indep, by = (k, d = -1) => I.slice().sort((a, b) => d * (k(a) - k(b)));
+  const nbi = c => c.b.filter(b => DATA.c[b]?.ind).length;
+  const big = by(c => c.a), nb = by(nbi), land = I.filter(c => c.lk);
+  const pl = (n, one, few, many) => n === 1 ? one : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? few : many;
+  const caps = I.filter(c => c.cl), north = caps.slice().sort((a, b) => b.cl[0] - a.cl[0])[0], south = caps.slice().sort((a, b) => a.cl[0] - b.cl[0])[0];
+  const pol = DATA.c.POL, larger = I.filter(c => c.a > pol.a).length;
+  const euro = I.filter(c => c.cur[0] === "euro").length, eng = I.filter(c => c.lang.includes("angielski")).length;
+  const reg = Object.entries(I.reduce((m, c) => (m[c.r] = (m[c.r] || 0) + 1, m), {})).sort((a, b) => b[1] - a[1])[0];
+  const ratio = (big[0].a / pol.a).toFixed(0), tiny = big[big.length - 1];
+  return [
+    `Największym państwem świata jest ${big[0].n} (${fmt(big[0].a)} km²). Zmieściłoby się w nim ok. ${ratio} Polsk.`,
+    `Najmniejsze państwo świata to ${tiny.n}: ma zaledwie ${tiny.a < 1 ? tiny.a.toString().replace(".", ",") : fmt(tiny.a)} km².`,
+    nbi(nb[0]) === nbi(nb[1]) ? `Najwięcej sąsiadów mają ${nb[0].n} i ${nb[1].n}: każde z nich graniczy na lądzie z ${nbi(nb[0])} państwami.` : `Najwięcej sąsiadów ma ${nb[0].n}: graniczy na lądzie z ${nbi(nb[0])} państwami.`,
+    `${land.length} ${pl(land.length, "państwo", "państwa", "państw")} świata nie ma dostępu do morza, m.in. ${land.filter(c => FAMOUS.has(c.code)).slice(0, 4).map(c => c.n).join(", ")}.`,
+    `Najdalej na północ wysuniętą stolicą państwa jest ${north.cap[0]} (${north.n}), a najdalej na południe ${south.cap[0]} (${south.n}).`,
+    `Pod względem powierzchni Polska zajmuje ${larger + 1}. miejsce wśród państw świata. Większych od niej jest ${larger} krajów.`,
+    `Euro jest walutą nie tylko w Unii Europejskiej, ale też m.in. w Czarnogórze, Kosowie, Andorze, Monako, San Marino i Watykanie.`,
+    `Angielski jest językiem urzędowym w ${eng} państwach, najwięcej spośród wszystkich języków.`,
+    `Region z największą liczbą niepodległych państw to ${REG[reg[0]]}: aż ${reg[1]}.`,
+    `Polska graniczy z ${pol.b.length} państwami: ${pol.b.map(b => DATA.c[b].n).join(", ")}.`,
+  ];
+}
+let factI = Math.floor(Math.random() * 10);
+async function renderFact() {
+  await ready; const F = buildFacts(); factI = (factI + F.length) % F.length;
+  $("#factCard").innerHTML = `<div class="ico">!</div><div style="min-width:0"><div class="eyebrow">Czy wiesz, że…</div><p>${esc(F[factI])}</p></div><button class="btn small" type="button" id="factNext">Następna ciekawostka</button>`;
+  $("#factNext").onclick = () => { factI++; renderFact(); };
+}
+function renderStats() {
+  if (!$("#stats")) return;
+  const st = P.stats, acc = st.answers ? Math.round(st.correct / st.answers * 100) : 0;
+  $("#stats").innerHTML = [[fmt(st.games), "rozegranych gier"], [fmt(st.answers), "odpowiedzi"], [acc + "%", "trafności"], [fmt(P.xp), "punktów XP"], [P.seen.length, "krajów odkrytych na mapie"], [P.daily?.streak || 0, "najnowsza seria wyzwań"]].map(([v, l]) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`).join("");
+}
+
+
+/* ---------- Detailed maps: official Mapy.com REST API (tiles + search) ---------- */
+const Detail = {
+  sets: [
+    {id: "basic", name: "Mapa podstawowa", retina: true},
+    {id: "outdoor", name: "Mapa turystyczna", retina: true},
+    {id: "aerial", name: "Zdjęcia lotnicze", overlay: true},
+    {id: "winter", name: "Mapa zimowa"},
+  ],
+  key() { return (window.GEOFO_MAPY_KEY || "").trim() || store.get("mapyKey", ""); },
+  note(html) { const n = $("#dNote"); n.innerHTML = `<div class="card">${html}</div>`; n.hidden = !html; },
+  howTo() {
+    return `<h2 style="font-size:24px">Mapy dokładne z Mapy.com</h2>
+      <p class="note" style="margin:0">Ta zakładka pokazuje szczegółowe mapy Mapy.com (ulice, budynki, szlaki, zdjęcia lotnicze) przez ich oficjalne API. Potrzebny jest darmowy klucz:</p>
+      <ol class="note"><li>Wejdź na <a href="https://developer.mapy.com/" target="_blank" rel="noopener">developer.mapy.com</a> i załóż konto.</li><li>Utwórz projekt i skopiuj <b>klucz API</b>.</li><li>Wklej go poniżej i kliknij „Zapisz klucz”.</li></ol>
+      <div class="dkey"><input type="text" id="dKey2" placeholder="Wklej klucz API" autocomplete="off" aria-label="Klucz API Mapy.com"><div class="row"><button class="btn primary" type="button" id="dKeySave2">Zapisz klucz</button><a class="btn" href="https://mapy.com/" target="_blank" rel="noopener">Otwórz Mapy.com ↗</a></div></div>`;
+  },
+  async init() {
+    if (!this.ok) {
+      this.ok = true;
+      $("#dToggle").onclick = () => $("#v-dokladne .panel").classList.toggle("collapsed");
+      if (innerWidth < 760) $("#v-dokladne .panel").classList.add("collapsed");
+      $("#dKeySave").onclick = () => this.saveKey($("#dKey").value);
+      $("#dKeyDel").onclick = () => { store.set("mapyKey", ""); $("#dKey").value = ""; location.reload(); };
+      this.idx = store.get("dset", 0);
+      $("#dSeg").innerHTML = this.sets.map((m, i) => `<button type="button" data-i="${i}" aria-pressed="${i === this.idx}">${m.name}</button>`).join("");
+      $$("#dSeg button").forEach(b => b.onclick = () => this.setLayer(+b.dataset.i));
+    }
+    const key = this.key();
+    $("#dKey").value = store.get("mapyKey", "");
+    if (window.claude) { this.previewNote(); return; }
+    if (!key) { this.frameMode(); return; }
+    $(".dmap").classList.remove("frame-mode");
+    if (!window.L) {
+      try { await new Promise((res, rej) => { const sc = document.createElement("script"); sc.src = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"; sc.onload = res; sc.onerror = rej; document.head.append(sc); }); }
+      catch { this.note(`<h2 style="font-size:22px">Nie udało się wczytać mapy</h2><p class="note" style="margin:0">Sprawdź połączenie z internetem i odśwież stronę.</p>`); return; }
+    }
+    if (!this.map) this.build(key); else this.map.invalidateSize();
+  },
+  /* Default: the official Mapy.com embed (no API key, no login) */
+  kinds: ["zakladni", "turisticka", "letecka", "zimni"],
+  view() { const v = store.get("dview", {c: [52.07, 19.48], z: 6}); return {lat: v.c[0], lon: v.c[1], z: v.z}; },
+  frameURL(pin) {
+    const v = this.view(), kind = this.kinds[this.idx] || "zakladni";
+    let u = `https://mapy.com/pl/${kind}?frame=1&x=${v.lon.toFixed(5)}&y=${v.lat.toFixed(5)}&z=${v.z}`;
+    if (pin) u += `&source=coor&id=${pin[1].toFixed(5)}%2C${pin[0].toFixed(5)}`;
+    return u;
+  },
+  pageURL() { const v = this.view(), kind = this.kinds[this.idx] || "zakladni"; return `https://mapy.com/pl/${kind}?x=${v.lon.toFixed(5)}&y=${v.lat.toFixed(5)}&z=${v.z}`; },
+  frameMode() {
+    $(".dmap").classList.add("frame-mode"); this.note("");
+    if (!this.frame) {
+      this.frame = document.createElement("iframe");
+      this.frame.className = "mframe"; this.frame.title = "Mapa Mapy.com"; this.frame.loading = "lazy";
+      this.frame.setAttribute("allow", "geolocation; fullscreen");
+      $("#detailMap").innerHTML = ""; $("#detailMap").append(this.frame);
+      this.bindFreeSearch();
+    }
+    this.refreshFrame();
+  },
+  refreshFrame(pin) {
+    if (!this.frame) return;
+    this.pinAt = pin || this.pinAt;
+    this.frame.src = this.frameURL(this.pinAt);
+    $("#dOpen").href = this.pageURL();
+  },
+  previewNote() {
+    $(".dmap").classList.add("frame-mode");
+    this.note(`<h2 style="font-size:22px">Mapy dokładne działają na Twojej stronie w internecie</h2>
+      <p class="note" style="margin:0">Mapa Mapy.com wyświetla się w GeoFo od razu, bez logowania i bez klucza, ale dopiero na stronie opublikowanej w internecie (np. Netlify). Podgląd w Claude blokuje mapy z innych serwisów, dlatego tutaj jej nie widać.</p>
+      <div class="row"><a class="btn primary" href="${this.pageURL()}" target="_blank" rel="noopener">Otwórz to miejsce w Mapy.com ↗</a></div>`);
+  },
+  // free place search (OpenStreetMap Nominatim), moves the Mapy.com map
+  bindFreeSearch() {
+    const inp = $("#dFind"), sg = $("#dSugg"); let t, items = [], on = 0;
+    const go = i => { const it = items[i]; if (!it) return; sg.hidden = true; inp.value = it.name; inp.blur();
+      const lat = +it.lat, lon = +it.lon, bb = (it.boundingbox || []).map(Number);
+      let z = 15; if (bb.length === 4) { const span = Math.max(bb[1] - bb[0], (bb[3] - bb[2]) * Math.cos(lat * Math.PI / 180)); z = Math.max(4, Math.min(17, Math.round(Math.log2(360 / Math.max(span, 0.002))) + 1)); }
+      store.set("dview", {c: [+lat.toFixed(5), +lon.toFixed(5)], z});
+      this.refreshFrame([lat, lon]);
+      $("#dInfo").innerHTML = `<b>${esc(it.name)}</b><br><span class="note">${esc(it.display_name)}</span>`; };
+    const mark = () => $$("button", sg).forEach((b, i) => b.classList.toggle("on", i === on));
+    inp.addEventListener("input", () => {
+      clearTimeout(t); const q = inp.value.trim(); if (q.length < 3) { sg.hidden = true; return; }
+      t = setTimeout(async () => {
+        try {
+          const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=6&accept-language=pl&q=${encodeURIComponent(q)}`);
+          items = (await r.json()).map(x => ({...x, name: x.name || x.display_name.split(",")[0]})); on = 0;
+          sg.innerHTML = items.map((it, i) => `<button type="button" data-i="${i}"><span>${esc(it.name)}</span><small>${esc(it.display_name.split(",").slice(1, 3).join(","))}</small></button>`).join("") || `<div class="note" style="padding:8px 10px">Nic nie znaleziono</div>`;
+          sg.hidden = false; mark();
+          $$("button", sg).forEach(b => b.onmousedown = e => { e.preventDefault(); go(+b.dataset.i); });
+        } catch { sg.innerHTML = `<div class="note" style="padding:8px 10px">Wyszukiwanie jest chwilowo niedostępne.</div>`; sg.hidden = false; }
+      }, 600);
+    });
+    inp.addEventListener("keydown", e => {
+      if (e.key === "ArrowDown") { on = Math.min(on + 1, items.length - 1); mark(); e.preventDefault(); }
+      else if (e.key === "ArrowUp") { on = Math.max(on - 1, 0); mark(); e.preventDefault(); }
+      else if (e.key === "Enter") { go(on); e.preventDefault(); }
+      else if (e.key === "Escape") sg.hidden = true;
+    });
+    inp.addEventListener("blur", () => setTimeout(() => sg.hidden = true, 150));
+  },
+  saveKey(v) { v = (v || "").trim(); if (!v) return; store.set("mapyKey", v); this.note(""); this.map = null; this.frame = null; $("#detailMap").innerHTML = ""; location.reload(); },
+  build(key) {
+    const v = store.get("dview", {c: [52.07, 19.48], z: 6});
+    const map = this.map = L.map("detailMap", {zoomControl: false, attributionControl: true, worldCopyJump: true}).setView(v.c, v.z);
+    L.control.zoom({position: "topright"}).addTo(map);
+    L.control.scale({imperial: false, position: "bottomright"}).addTo(map);
+    map.attributionControl.setPrefix(false);
+    this.setLayer(this.idx);
+    // detect blocked tiles (e.g. inside a sandboxed preview) or a wrong key
+    const probe = new Image();
+    probe.onload = () => this.note("");
+    probe.onerror = () => {
+      this.note(`<h2 style="font-size:22px">Mapy dokładne nie mogą się tu wczytać</h2>
+        <p class="note" style="margin:0">Albo klucz API jest nieprawidłowy, albo ten widok blokuje mapy z innych serwisów (tak działa podgląd strony w Claude). Na stronie opublikowanej w internecie (Netlify, serwer GeoFo) mapy działają.</p>
+        <div class="row"><a class="btn primary" id="dOpen2" href="https://mapy.com/" target="_blank" rel="noopener">Otwórz Mapy.com ↗</a><button class="btn" type="button" id="dKeyFix">Zmień klucz</button></div>`);
+      $("#dKeyFix").onclick = () => { this.note(this.howTo()); $("#dKey2").value = store.get("mapyKey", ""); $("#dKeySave2").onclick = () => this.saveKey($("#dKey2").value); };
+      this.updateLink();
+    };
+    probe.src = `https://api.mapy.com/v1/maptiles/basic/256/6/35/21?apikey=${encodeURIComponent(key)}`;
+    map.on("moveend", () => { const c = map.getCenter(); store.set("dview", {c: [+c.lat.toFixed(5), +c.lng.toFixed(5)], z: map.getZoom()}); this.updateLink(); });
+    map.on("click", e => {
+      const {lat, lng} = e.latlng;
+      $("#dInfo").innerHTML = `<span class="mono">${Math.abs(lat).toFixed(5)}° ${lat >= 0 ? "N" : "S"}, ${Math.abs(lng).toFixed(5)}° ${lng >= 0 ? "E" : "W"}</span>`;
+      this.pin(e.latlng);
+    });
+    this.updateLink(); this.bindSearch(key);
+  },
+  setLayer(i) {
+    this.idx = i; store.set("dset", i);
+    $$("#dSeg button").forEach((b, j) => b.setAttribute("aria-pressed", i === j));
+    if (this.frame && !this.map) { this.refreshFrame(); return; }
+    if (!this.map) return;
+    const key = encodeURIComponent(this.key()), m = this.sets[i], size = m.retina && devicePixelRatio > 1 ? "256@2x" : "256";
+    const attr = '<a href="https://api.mapy.com/copyright" target="_blank" rel="noopener">&copy; Seznam.cz a.s. and others</a>';
+    (this.layers || []).forEach(l => this.map.removeLayer(l));
+    this.layers = [L.tileLayer(`https://api.mapy.com/v1/maptiles/${m.id}/${size}/{z}/{x}/{y}?apikey=${key}&lang=pl`, {minZoom: 0, maxZoom: 19, attribution: attr})];
+    if (m.overlay) this.layers.push(L.tileLayer(`https://api.mapy.com/v1/maptiles/names-overlay/256/{z}/{x}/{y}?apikey=${key}&lang=pl`, {minZoom: 0, maxZoom: 19}));
+    this.layers.forEach(l => l.addTo(this.map));
+    this.updateLink();
+  },
+  pin(ll) {
+    if (this.marker) this.marker.remove();
+    this.marker = L.marker(ll, {icon: L.divIcon({className: "", html: '<div class="dpin"></div>', iconSize: [18, 18], iconAnchor: [9, 9]})}).addTo(this.map);
+  },
+  updateLink() {
+    if (!this.map) return;
+    const c = this.map.getCenter(), z = this.map.getZoom(), kind = {basic: "zakladni", outdoor: "turisticka", aerial: "letecka", winter: "zimni"}[this.sets[this.idx].id];
+    const href = `https://mapy.com/pl/${kind}?x=${c.lng.toFixed(5)}&y=${c.lat.toFixed(5)}&z=${z}`;
+    $("#dOpen").href = href; const o2 = $("#dOpen2"); if (o2) o2.href = href;
+  },
+  bindSearch(key) {
+    const inp = $("#dFind"), sg = $("#dSugg"); let t, items = [], on = 0;
+    const go = i => { const it = items[i]; if (!it) return; sg.hidden = true; inp.value = it.name; inp.blur();
+      const ll = [it.position.lat, it.position.lon]; this.pin(ll);
+      if (it.bbox && it.bbox.length === 4) this.map.fitBounds([[it.bbox[1], it.bbox[0]], [it.bbox[3], it.bbox[2]]], {maxZoom: 17}); else this.map.setView(ll, 15);
+      $("#dInfo").innerHTML = `<b>${esc(it.name)}</b><br><span class="note">${esc(it.location || it.label || "")}</span>`; };
+    const mark = () => $$("button", sg).forEach((b, i) => b.classList.toggle("on", i === on));
+    inp.addEventListener("input", () => {
+      clearTimeout(t); const q = inp.value.trim(); if (q.length < 2) { sg.hidden = true; return; }
+      t = setTimeout(async () => {
+        try {
+          const r = await fetch(`https://api.mapy.com/v1/suggest?lang=pl&limit=6&query=${encodeURIComponent(q)}&apikey=${encodeURIComponent(key)}`);
+          const j = await r.json(); items = j.items || []; on = 0;
+          sg.innerHTML = items.map((it, i) => `<button type="button" data-i="${i}"><span>${esc(it.name)}</span><small>${esc(it.label || "")}</small></button>`).join("") + `<div class="note" style="padding:6px 10px;font-size:11px">Wyszukiwanie: Mapy.com</div>`;
+          sg.hidden = !items.length; mark();
+          $$("button", sg).forEach(b => b.onmousedown = e => { e.preventDefault(); go(+b.dataset.i); });
+        } catch { sg.innerHTML = `<div class="note" style="padding:8px 10px">Wyszukiwanie jest niedostępne w tym widoku.</div>`; sg.hidden = false; }
+      }, 250);
+    });
+    inp.addEventListener("keydown", e => {
+      if (e.key === "ArrowDown") { on = Math.min(on + 1, items.length - 1); mark(); e.preventDefault(); }
+      else if (e.key === "ArrowUp") { on = Math.max(on - 1, 0); mark(); e.preventDefault(); }
+      else if (e.key === "Enter") { go(on); e.preventDefault(); }
+      else if (e.key === "Escape") sg.hidden = true;
+    });
+    inp.addEventListener("blur", () => setTimeout(() => sg.hidden = true, 150));
+  },
+};
+
+/* ---------- Atlas ---------- */
+const Atlas = {
+  sort: {k: "n", dir: 1},
+  cols: [
+    {k: "n", t: "Kraj"}, {k: "cap", t: "Stolica"}, {k: "r", t: "Kontynent", cls: "col-hide"},
+    {k: "a", t: "Powierzchnia km²", num: true}, {k: "nb", t: "Sąsiedzi", num: true, cls: "col-hide"}, {k: "lat", t: "Szer. geogr.", num: true, cls: "col-hide"}
+  ],
+  async init() {
+    await ready;
+    if (!this.ok) {
+      this.ok = true;
+      $("#atlasR").innerHTML += Object.entries(REG).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
+      ["#atlasQ", "#atlasR", "#atlasI"].forEach(s => $(s).addEventListener("input", () => this.render()));
+      const opts = DATA.indep.map(c => `<option value="${c.code}">${esc(c.n)}</option>`).join("");
+      $("#cmpA").innerHTML = opts; $("#cmpB").innerHTML = opts;
+      $("#cmpA").value = "POL"; $("#cmpB").value = "DEU";
+      ["#cmpA", "#cmpB"].forEach(s => $(s).addEventListener("change", () => this.compare()));
+      $("#cmpSwap").onclick = () => { const a = $("#cmpA").value; $("#cmpA").value = $("#cmpB").value; $("#cmpB").value = a; this.compare(); };
+      $("#cmpAsk").onclick = () => { const a = DATA.c[$("#cmpA").value], b = DATA.c[$("#cmpB").value]; askBot(`Porównaj geografię krajów ${a.n} i ${b.n}: położenie, ukształtowanie terenu, klimat, rzeki, zasoby. Wskaż najważniejsze różnice i podobieństwa.`); };
+    }
+    if (this.pendingA) { $("#cmpA").value = this.pendingA; if ($("#cmpB").value === this.pendingA) $("#cmpB").value = this.pendingA === "POL" ? "DEU" : "POL"; this.pendingA = null; setTimeout(() => $("#cmpOut").scrollIntoView({behavior: "smooth", block: "center"}), 60); }
+    this.render(); this.compare();
+    if (!this.gl) { this.gl = true; $("#glossQ").addEventListener("input", renderGloss); renderGloss(); }
+  },
+  val(c, k) { return k === "cap" ? (c.cap[0] || "") : k === "nb" ? c.b.length : k === "lat" ? c.ll[0] : k === "r" ? REG[c.r] || "" : c[k]; },
+  render() {
+    const q = $("#atlasQ").value.trim().toLowerCase(), r = $("#atlasR").value, ind = $("#atlasI").value;
+    let rows = DATA.list.filter(c => (!ind || c.ind) && (!r || c.r === r) && (!q || c.n.toLowerCase().includes(q) || (c.cap[0] || "").toLowerCase().includes(q)));
+    const {k, dir} = this.sort;
+    rows.sort((a, b) => { const x = this.val(a, k), y = this.val(b, k); return (typeof x === "number" ? x - y : String(x).localeCompare(String(y), "pl")) * dir; });
+    $("#atlasHead").innerHTML = this.cols.map(c => `<th class="${c.num ? "num " : ""}${c.cls || ""}" data-k="${c.k}" ${c.k === k ? `aria-sort="${dir > 0 ? "ascending" : "descending"}"` : ""}>${c.t}${c.k === k ? (dir > 0 ? " ↑" : " ↓") : ""}</th>`).join("");
+    $$("#atlasHead th").forEach(th => th.onclick = () => { const kk = th.dataset.k; this.sort = {k: kk, dir: this.sort.k === kk ? -this.sort.dir : (["a", "nb", "lat"].includes(kk) ? -1 : 1)}; this.render(); });
+    $("#atlasBody").innerHTML = rows.map(c => `<tr data-c="${c.code}"><td><span class="nm">${flagImg(c.c2, 28)}${esc(c.n)}</span></td><td>${esc(c.cap[0] || "—")}</td><td class="col-hide">${REG[c.r] || ""}</td><td class="num">${fmt(c.a)}</td><td class="num col-hide">${c.b.length}</td><td class="num col-hide">${Math.abs(c.ll[0]).toFixed(1)}° ${c.ll[0] >= 0 ? "N" : "S"}</td></tr>`).join("");
+    $("#atlasCount").textContent = `${rows.length} ${rows.length === 1 ? "pozycja" : "pozycji"}`;
+    refreshFlags($("#atlasBody"));
+    $$("#atlasBody tr").forEach(tr => tr.onclick = () => DATA.mapped.has(tr.dataset.c) ? showOnMap(tr.dataset.c) : toast("Ten obszar jest za mały, by pokazać go na mapie. Zapytaj o niego GeoBota."));
+  },
+  compare() {
+    const a = DATA.c[$("#cmpA").value], b = DATA.c[$("#cmpB").value]; if (!a || !b) return;
+    const row = (lbl, va, vb, fa = fmt) => {
+      const m = Math.max(Math.abs(va), Math.abs(vb)) || 1;
+      return `<div class="cmp-row"><div style="display:grid;gap:3px"><span class="v" style="text-align:right">${fa(va)}</span><div class="bar l"><i style="width:${Math.abs(va) / m * 100}%"></i></div></div><div class="lbl">${lbl}</div><div style="display:grid;gap:3px"><span class="v">${fa(vb)}</span><div class="bar r"><i style="width:${Math.abs(vb) / m * 100}%"></i></div></div></div>`;
+    };
+    const side = c => `<div class="cmp"><div class="head">${flagImg(c.c2, 48)}<div><h3 style="font-size:22px">${esc(c.n)}</h3><div class="note">${esc(c.cap[0] || "—")} · ${SUB[c.sr] || REG[c.r]}</div></div></div><div class="note">Języki: ${esc(c.lang.join(", ") || "—")}<br>Waluta: ${esc(c.cur[0] || "—")}<br>${c.lk ? "Bez dostępu do morza" : "Z dostępem do morza"}</div></div>`;
+    const ratio = a.a / b.a;
+    $("#cmpOut").innerHTML = `<div class="card" style="margin-top:14px"><div class="cmpbox" style="margin-top:0">${side(a)}${side(b)}</div>
+      <div class="cmp-rows">${row("Powierzchnia km²", a.a, b.a)}${row("Liczba sąsiadów", a.b.length, b.b.length)}${row("Szerokość geogr.", a.ll[0], b.ll[0], v => v.toFixed(1) + "°")}</div>
+      <p class="note" style="margin:14px 0 0">${esc(a.n)} jest ${ratio >= 1 ? `<b>${ratio.toFixed(ratio >= 10 ? 0 : 1)} razy większ${a.n.endsWith("y") ? "e" : a.n.endsWith("a") ? "a" : "y"}</b> od` : `<b>${(1 / ratio).toFixed(1 / ratio >= 10 ? 0 : 1)} razy mniejsz${a.n.endsWith("y") ? "e" : a.n.endsWith("a") ? "a" : "y"}</b> od`} ${esc(b.n)}. Odległość między stolicami: <b class="mono">${a.cl && b.cl ? fmt(d3.geoDistance([a.cl[1], a.cl[0]], [b.cl[1], b.cl[0]]) * 6371) + " km" : "brak danych"}</b>.</p></div>`;
+    refreshFlags($("#cmpOut"));
+  }
+};
+
+/* ---------- Games ---------- */
+let FAMOUS = null;
+const todayKey = () => new Date().toLocaleDateString("sv-SE");
+function dailyStatus() {
+  const d = P.daily; if (!d) return "Seria: 0 dni";
+  const y = new Date(Date.now() - 864e5).toLocaleDateString("sv-SE");
+  const live = d.date === todayKey() || d.date === y ? d.streak : 0;
+  return `Seria: ${live} ${live === 1 ? "dzień" : "dni"}${d.date === todayKey() ? " · dziś zrobione" : ""}`;
+}
+function seeded(seed) { return () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; }; }
+const LV = {latwe: "Łatwe", srednie: "Średnie", trudne: "Trudne"};
+let Q = null;
+const qReady = fetch("questions.json").then(r => r.json()).then(d => {
+  Q = d; const total = Object.keys(LV).reduce((s, k) => s + d[k].length, 0);
+  $("#stQ").textContent = fmt(total);
+});
+const rich = s => esc(s).replace(/⟦([A-Z]{2})⟧/g, (_, c) => flagImg(c, 84, "flaga"));
+const MODES = [
+  {id: "daily", name: "Wyzwanie dnia", desc: "5 pytań na dziś, te same dla wszystkich. Raz dziennie, buduj serię dni.", icon: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M9 15l2 2 4-4"/>'},
+  {id: "quiz", name: "Quiz", desc: "10 200 pytań w trzech poziomach i wielu kategoriach.", icon: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.5v.5"/>'},
+  {id: "where", name: "Gdzie to jest?", desc: "Podaję kraj, Ty klikasz go na mapie. Im bliżej, tym więcej punktów.", icon: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>'},
+  {id: "flags", name: "Flagi na czas", desc: "60 sekund: rozpoznaj jak najwięcej flag. Seria daje bonus.", icon: '<path d="M5 21V4M5 4h12l-2 4 2 4H5"/>'},
+  {id: "caps", name: "Stolice na czas", desc: "60 sekund: dopasuj stolice do państw.", icon: '<path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-6h6v6"/>'},
+  {id: "hl", name: "Większy czy mniejszy?", desc: "Który kraj ma większą powierzchnię? Graj, dopóki się nie pomylisz.", icon: '<path d="M7 4v16M7 4l-3 3M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/>'},
+];
+const Games = {
+  mode: store.get("mode", "quiz"), level: store.get("level", "latwe"), run: null,
+  init() {
+    if (!this.ok) { this.ok = true; addEventListener("keydown", e => this.key(e)); }
+    renderPlayer(); renderStats(); this.renderModes(); if (!this.run) this.renderSetup();
+  },
+  renderModes() {
+    $("#modes").innerHTML = MODES.map(m => {
+      const b = P.best[m.id];
+      return `<button class="mode" type="button" data-m="${m.id}" aria-pressed="${m.id === this.mode}"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${m.icon}</svg><b>${m.name}</b><span>${m.desc}</span>${m.id === "daily" ? `<span class="best">${dailyStatus()}</span>` : b != null ? `<span class="best">Rekord: ${b}${m.id === "quiz" ? "%" : m.id === "where" ? " pkt" : m.id === "hl" ? " z rzędu" : ""}</span>` : ""}</button>`;
+    }).join("");
+    $$("#modes .mode").forEach(b => b.onclick = () => { this.stop(); this.mode = b.dataset.m; store.set("mode", this.mode); this.renderModes(); this.renderSetup(); });
+  },
+  async renderSetup() {
+    $("#stage").innerHTML = "";
+    const lv = `<div class="levels">${Object.entries(LV).map(([k, n]) => `<button class="lvlbtn" type="button" data-l="${k}" aria-pressed="${k === this.level}">${n}</button>`).join("")}</div>`;
+    if (this.mode === "quiz") {
+      await qReady;
+      $("#setup").innerHTML = `${lv}<div class="row"><select id="qcat" aria-label="Kategoria"></select><select id="qn" aria-label="Liczba pytań"><option value="5">5 pytań</option><option value="10" selected>10 pytań</option><option value="20">20 pytań</option></select><button class="btn primary" id="go" type="button">Rozpocznij quiz</button></div>`;
+      const fill = () => { const used = [...new Set(Q[this.level].map(q => q[3]))].sort((a, b) => Q.cats[a].localeCompare(Q.cats[b], "pl")); $("#qcat").innerHTML = `<option value="">Wszystkie kategorie</option>` + used.map(i => `<option value="${i}">${Q.cats[i]} (${Q[this.level].filter(q => q[3] === i).length})</option>`).join(""); };
+      fill(); this.bindLevels(fill);
+    } else if (this.mode === "daily") {
+      await qReady;
+      const done = P.daily?.date === todayKey();
+      $("#setup").innerHTML = `<p class="note" style="margin:0">Dzisiejszy zestaw: 2 pytania łatwe, 2 średnie i 1 trudne. ${done ? `Dziś już grałeś: <b>${P.daily.score}/5</b>. Wróć jutro po nowe pytania!` : "Możesz zagrać raz dziennie."}</p><div class="row"><button class="btn primary" id="go" type="button">${done ? "Zagraj jeszcze raz (bez punktów)" : "Zagraj w wyzwanie"}</button><span class="streak">${dailyStatus()}</span></div>`;
+    } else if (this.mode === "hl") {
+      $("#setup").innerHTML = `${lv}<p class="note" style="margin:0">Łatwe: znane kraje o wyraźnie różnej wielkości · Średnie: więcej państw · Trudne: wszystkie państwa, także podobnej wielkości. Klawisze: W = większy, M = mniejszy.</p><div class="row"><button class="btn primary" id="go" type="button">Graj</button></div>`;
+      this.bindLevels();
+    } else if (this.mode === "where") {
+      $("#setup").innerHTML = `${lv}<p class="note" style="margin:0">Łatwe: duże kraje · Średnie: średnie i duże · Trudne: wszystkie, także małe wyspy. 10 rund, maksymalnie 1000 punktów.</p><div class="row"><button class="btn primary" id="go" type="button">Graj</button></div>`;
+      this.bindLevels();
+    } else {
+      $("#setup").innerHTML = `${lv}<p class="note" style="margin:0">Łatwe: znane kraje · Średnie: więcej państw · Trudne: wszystkie państwa świata. Co 5 dobrych odpowiedzi z rzędu daje +3 sekundy.</p><div class="row"><button class="btn primary" id="go" type="button">Start: 60 sekund</button></div>`;
+      this.bindLevels();
+    }
+    $("#go").onclick = () => this.start();
+  },
+  bindLevels(cb) { $$("#setup .lvlbtn").forEach(b => b.onclick = () => { this.level = b.dataset.l; store.set("level", this.level); $$("#setup .lvlbtn").forEach(x => x.setAttribute("aria-pressed", x === b)); cb && cb(); }); },
+  stop() { if (this.run?.timer) clearInterval(this.run.timer); this.run = null; },
+  start() {
+    this.stop();
+    ({quiz: () => this.startQuiz(), daily: () => this.startDaily(), hl: () => this.startHL(), where: () => this.startWhere(), flags: () => this.startSprint("flags"), caps: () => this.startSprint("caps")})[this.mode]();
+    $("#stage").scrollIntoView({behavior: "smooth", block: "start"});
+  },
+  finishCommon() { award("start"); P.stats.games++; saveP(); renderStats(); },
+  setBest(id, v) { if (P.best[id] == null || v > P.best[id]) { const prev = P.best[id]; P.best[id] = v; saveP(); return prev ?? null; } return false; },
+
+  /* Quiz */
+  startQuiz() {
+    const cat = $("#qcat").value, n = +$("#qn").value;
+    const pool = Q[this.level].filter(q => cat === "" || q[3] === +cat);
+    this.run = {type: "quiz", qs: pickN(pool, n), i: 0, score: 0, level: this.level, wrong: []};
+    this.showQ();
+  },
+  showQ() {
+    const r = this.run, q = r.qs[r.i];
+    $("#stage").innerHTML = `<div class="card">
+      <div class="qtop"><span>${r.daily ? "Wyzwanie dnia" : LV[r.level]} · pytanie ${r.i + 1} z ${r.qs.length}</span><span>punkty: ${r.score}</span></div>
+      <div class="pbar"><i style="width:${r.i / r.qs.length * 100}%"></i></div>
+      <div class="qcat">${Q.cats[q[3]]}</div>
+      <h2 class="qtext">${rich(q[0])}</h2>
+      <div class="opts">${q[1].map((o, j) => `<button class="opt" type="button" data-j="${j}"><kbd>${"ABCD"[j]}</kbd><span>${rich(o)}</span></button>`).join("")}</div>
+      <div class="qfoot"><span class="note" id="fb">Odpowiedz klikając albo klawiszem A–D.</span><button class="btn primary" id="qnext" type="button" hidden>${r.i + 1 < r.qs.length ? "Następne pytanie" : "Zobacz wynik"}</button></div></div>`;
+    refreshFlags($("#stage"));
+    $$(".opt").forEach(b => b.onclick = () => this.answerQ(+b.dataset.j));
+    $("#qnext").onclick = () => { r.i++; r.i < r.qs.length ? this.showQ() : this.endQuiz(); };
+  },
+  answerQ(j) {
+    const r = this.run, q = r.qs[r.i]; if (!$("#qnext").hidden) return;
+    const btns = $$(".opt"); btns.forEach((b, k) => { b.disabled = true; if (k === q[2]) b.classList.add("good"); });
+    tally(j === q[2]);
+    if (j === q[2]) { r.score++; $("#fb").textContent = "Dobrze!"; }
+    else { btns[j].classList.add("bad"); r.wrong.push(q); $("#fb").innerHTML = `Prawidłowa odpowiedź: <b>${rich(q[1][q[2]])}</b>`; refreshFlags($("#fb")); }
+    $(".qtop span:last-child").textContent = `punkty: ${r.score}`;
+    $("#qnext").hidden = false; $("#qnext").focus();
+  },
+  endQuiz() {
+    const r = this.run, pct = Math.round(r.score / r.qs.length * 100);
+    if (r.daily) return this.endDaily();
+    const mult = {latwe: 1, srednie: 1.6, trudne: 2.4}[r.level], xp = r.score * 4 * mult;
+    const prev = this.setBest("quiz", pct);
+    addXP(xp); this.finishCommon();
+    if (pct === 100 && r.qs.length >= 10) award("perfect");
+    if (r.level === "trudne" && pct >= 70) award("hard");
+    const msg = pct === 100 ? "Bezbłędnie. Mistrz geografii!" : pct >= 70 ? "Świetny wynik!" : pct >= 40 ? "Nieźle. Zagraj jeszcze raz i pobij wynik." : "Ćwiczenie czyni mistrza. Spróbuj jeszcze raz!";
+    $("#stage").innerHTML = `<div class="card result"><div class="qcat">Quiz · ${LV[r.level]}</div><div class="big">${r.score} / ${r.qs.length}</div><p style="margin:0;font-size:18px">${msg}</p><div class="xpgain">+${Math.round(xp)} XP${prev !== false ? " · nowy rekord!" : ""}</div>
+      <div class="row" style="justify-content:center"><button class="btn primary" id="again" type="button">Zagraj jeszcze raz</button>${r.wrong.length ? `<button class="btn" id="askw" type="button">Wyjaśnij moje błędy (GeoBot)</button>` : ""}</div></div>`;
+    this.renderModes();
+    $("#again").onclick = () => this.start();
+    if (r.wrong.length) $("#askw").onclick = () => askBot("Pomyliłem się w quizie z geografii. Wyjaśnij krótko poprawne odpowiedzi i dodaj do każdej ciekawostkę:\n" + r.wrong.map(q => `- ${q[0].replace(/⟦([A-Z]{2})⟧/g, (_, c) => "flaga " + (DATA.c[DATA.by2[c]]?.n || c))} → ${q[1][q[2]].replace(/⟦([A-Z]{2})⟧/g, (_, c) => "flaga " + (DATA.c[DATA.by2[c]]?.n || c))}`).join("\n"));
+    this.run = null;
+  },
+
+  /* Daily challenge */
+  startDaily() {
+    const key = todayKey(), rnd = seeded(+key.replace(/-/g, ""));
+    const pick = (lvl, n) => { const out = [], pool = Q[lvl]; while (out.length < n) { const q = pool[Math.floor(rnd() * pool.length)]; if (!out.includes(q)) out.push(q); } return out; };
+    const qs = [...pick("latwe", 2), ...pick("srednie", 2), ...pick("trudne", 1)];
+    this.run = {type: "quiz", daily: true, practice: P.daily?.date === key, qs, i: 0, score: 0, level: "srednie", wrong: []};
+    this.showQ();
+  },
+  endDaily() {
+    const r = this.run, key = todayKey();
+    let xp = 0, msg;
+    if (!r.practice) {
+      const y = new Date(Date.now() - 864e5).toLocaleDateString("sv-SE");
+      const streak = P.daily?.date === y ? (P.daily.streak || 0) + 1 : 1;
+      P.daily = {date: key, score: r.score, streak}; saveP();
+      xp = r.score * 10 + 10; addXP(xp); this.finishCommon();
+      if (streak >= 3) award("daily3");
+      msg = `Seria: ${streak} ${streak === 1 ? "dzień" : "dni"} z rzędu. Wróć jutro po nowe pytania!`;
+    } else msg = "To była powtórka, więc bez punktów. Nowe pytania jutro!";
+    $("#stage").innerHTML = `<div class="card result"><div class="qcat">Wyzwanie dnia · ${new Date().toLocaleDateString("pl-PL", {day: "numeric", month: "long"})}</div><div class="big">${r.score} / 5</div><p style="margin:0;font-size:18px">${msg}</p>${xp ? `<div class="xpgain">+${xp} XP</div>` : ""}
+      <div class="row" style="justify-content:center">${r.wrong.length ? `<button class="btn" id="askw" type="button">Wyjaśnij moje błędy (GeoBot)</button>` : ""}<button class="btn primary" id="again" type="button">Inne gry</button></div></div>`;
+    this.renderModes(); renderChallenge();
+    $("#again").onclick = () => $("#modes").scrollIntoView({behavior: "smooth"});
+    if (r.wrong.length) $("#askw").onclick = () => askBot("Pomyliłem się w wyzwaniu dnia z geografii. Wyjaśnij krótko poprawne odpowiedzi:\n" + r.wrong.map(q => `- ${q[0].replace(/⟦([A-Z]{2})⟧/g, (_, c) => "flaga " + (DATA.c[DATA.by2[c]]?.n || c))} → ${q[1][q[2]].replace(/⟦([A-Z]{2})⟧/g, (_, c) => "flaga " + (DATA.c[DATA.by2[c]]?.n || c))}`).join("\n"));
+    this.run = null;
+  },
+
+  /* Bigger or smaller */
+  async startHL() {
+    await ready; await flagsReady;
+    let pool = DATA.indep.filter(c => c.a >= 300);
+    if (this.level === "latwe") pool = pool.filter(c => FAMOUS.has(c.code));
+    else if (this.level === "srednie") pool = pool.filter(c => FAMOUS.has(c.code) || c.a > 1.5e5);
+    this.run = {type: "hl", pool, a: pool[Math.floor(Math.random() * pool.length)], score: 0, level: this.level};
+    this.nextHL();
+  },
+  pickB(a) {
+    const r = this.run, minRatio = {latwe: 1.6, srednie: 1.25, trudne: 1.05}[r.level];
+    for (let k = 0; k < 200; k++) { const b = r.pool[Math.floor(Math.random() * r.pool.length)]; const q = Math.max(a.a, b.a) / Math.min(a.a, b.a); if (b !== a && q >= minRatio) return b; }
+    return r.pool.find(b => b !== a);
+  },
+  nextHL() {
+    const r = this.run; r.b = this.pickB(r.a); r.lock = false;
+    const side = (c, show) => `<div class="side">${flagImg(c.c2, 96)}<h3>${esc(c.n)}</h3><div class="note">${SUB[c.sr] || REG[c.r]}</div>${show}</div>`;
+    $("#stage").innerHTML = `<div class="card"><div class="qtop"><span>Większy czy mniejszy? · ${LV[r.level]}</span><span>seria: ${r.score}</span></div><div class="pbar"><i style="width:${Math.min(100, r.score * 5)}%"></i></div>
+      <div class="hl">${side(r.a, `<div class="area">${fmt(r.a.a)} km²</div>`)}<div class="vs">vs</div>${side(r.b, `<div class="area" id="hlB">? km²</div><div class="choices"><button class="btn primary" type="button" data-v="1">Większy <kbd>W</kbd></button><button class="btn" type="button" data-v="-1">Mniejszy <kbd>M</kbd></button></div>`)}</div>
+      <div class="qfoot"><span class="note" id="fb">Czy ${esc(r.b.n)} ma większą czy mniejszą powierzchnię niż ${esc(r.a.n)}?</span></div></div>`;
+    refreshFlags($("#stage"));
+    $$("#stage .choices .btn").forEach(b => b.onclick = () => this.answerHL(+b.dataset.v));
+  },
+  answerHL(v) {
+    const r = this.run; if (!r || r.lock) return; r.lock = true;
+    const ok = (r.b.a > r.a.a ? 1 : -1) === v, ratio = r.b.a / r.a.a; tally(ok);
+    $("#hlB").textContent = fmt(r.b.a) + " km²"; $("#hlB").classList.add(ok ? "good" : "bad");
+    $$("#stage .choices .btn").forEach(b => b.disabled = true);
+    const rel = ratio >= 1 ? `${ratio.toFixed(ratio >= 10 ? 0 : 1)} razy większa` : `${(1 / ratio).toFixed(1 / ratio >= 10 ? 0 : 1)} razy mniejsza`;
+    if (ok) {
+      r.score++; $("#fb").innerHTML = `Dobrze! Powierzchnia: ${rel}.`; $(".qtop span:last-child").textContent = `seria: ${r.score}`;
+      if (r.score >= 10) award("wave");
+      setTimeout(() => { if (this.run === r) { r.a = r.b; this.nextHL(); } }, 1100);
+    } else {
+      $("#fb").innerHTML = `Niestety. ${esc(r.b.n)} jest ${rel} niż ${esc(r.a.n)}.`;
+      setTimeout(() => { if (this.run === r) this.endHL(); }, 1500);
+    }
+  },
+  endHL() {
+    const r = this.run, xp = r.score * 6 * {latwe: 1, srednie: 1.4, trudne: 2}[r.level];
+    const prev = r.score > 0 ? this.setBest("hl", r.score) : false; addXP(xp); this.finishCommon();
+    $("#stage").innerHTML = `<div class="card result"><div class="qcat">Większy czy mniejszy? · ${LV[r.level]}</div><div class="big">${r.score}</div><p style="margin:0;font-size:18px">${r.score >= 15 ? "Niesamowite wyczucie skali!" : r.score >= 8 ? "Świetna seria!" : r.score >= 3 ? "Nieźle. Spróbuj pobić wynik!" : "Powierzchnie bywają zaskakujące. Jeszcze raz?"}</p><div class="xpgain">+${Math.round(xp)} XP${prev !== false ? " · nowy rekord!" : ""}</div><div class="row" style="justify-content:center"><button class="btn primary" id="again" type="button">Jeszcze raz</button></div></div>`;
+    this.renderModes(); $("#again").onclick = () => this.start(); this.run = null;
+  },
+
+  /* Where is it? */
+  async startWhere() {
+    await ready;
+    const min = {latwe: 4e5, srednie: 6e4, trudne: 0}[this.level];
+    const pool = DATA.indep.filter(c => DATA.mapped.has(c.code) && c.a >= min && c.a > 300);
+    this.run = {type: "where", qs: pickN(pool, 10), i: 0, score: 0, level: this.level, locked: false};
+    $("#stage").innerHTML = `<div class="mapgame"><div class="bar-top"><div class="target" id="wT"></div><div class="qtop" style="gap:16px"><span id="wR"></span><span id="wS"></span></div><div class="row"><span class="note" id="wF" style="max-width:40ch"></span><button class="btn primary" id="wN" type="button" hidden>Dalej</button></div></div><div class="mapview" id="wMap"></div></div>`;
+    this.gm = new GeoMap($("#wMap"), {kind: "game", game: true, onPick: (ll, x) => this.pickWhere(ll, x)});
+    await this.gm.ready;
+    $("#wN").onclick = () => { const r = this.run; r.i++; r.i < r.qs.length ? this.roundWhere() : this.endWhere(); };
+    this.roundWhere();
+  },
+  roundWhere() {
+    const r = this.run, c = r.qs[r.i]; r.locked = false;
+    this.gm.marks = []; this.gm.pins = null; this.gm.fitWorld(true);
+    $("#wT").innerHTML = `<span>Kliknij:</span> ${this.level === "latwe" ? flagImg(c.c2, 40) : ""}<span>${esc(c.n)}</span>`; refreshFlags($("#wT"));
+    $("#wR").textContent = `runda ${r.i + 1}/10`; $("#wS").textContent = `${r.score} pkt`;
+    $("#wF").textContent = "Przybliżaj kółkiem lub dwoma palcami."; $("#wN").hidden = true;
+  },
+  pickWhere(ll, x) {
+    const r = this.run; if (!r || r.locked) return;
+    r.locked = true;
+    const c = r.qs[r.i], target = this.gm.feats.find(f => f.code === c.code);
+    let pts, txt;
+    if (x && x.code === c.code) { pts = 100; txt = `Brawo! To ${c.n}. +100 pkt`; }
+    else {
+      // distance from click to nearest point of target ≈ to its centroid, minus rough radius
+      const cen = d3.geoCentroid(target.f), rad = Math.sqrt(c.a / Math.PI);
+      const km = Math.max(0, d3.geoDistance([ll.lon, ll.lat], cen) * 6371 - rad * 0.8);
+      pts = Math.max(0, Math.round(100 - km / 30));
+      txt = `${x?.c ? `To jest ${x.c.n}. ` : ""}${c.n} leży ok. ${fmt(km)} km dalej. +${pts} pkt`;
+      if (x) this.gm.marks.push({x, fill: "rgba(184,50,63,.35)", stroke: css("--bad")});
+    }
+    this.gm.marks.push({x: target, fill: "rgba(34,128,74,.45)", stroke: css("--good")});
+    this.gm.pins = [{lon: ll.lon, lat: ll.lat, color: css("--accent-2")}];
+    tally(pts >= 50); r.score += pts; $("#wS").textContent = `${r.score} pkt`; $("#wF").textContent = txt;
+    $("#wN").hidden = false; $("#wN").textContent = r.i + 1 < 10 ? "Dalej" : "Wynik"; $("#wN").focus();
+    this.gm.flyTo(target.b, c.ll);
+  },
+  endWhere() {
+    const r = this.run, xp = r.score / 10 * {latwe: 1, srednie: 1.5, trudne: 2.2}[r.level];
+    const prev = this.setBest("where", r.score); addXP(xp); this.finishCommon();
+    if (r.score >= 800) award("eagle");
+    $("#stage").innerHTML = `<div class="card result"><div class="qcat">Gdzie to jest? · ${LV[r.level]}</div><div class="big">${r.score} pkt</div><p style="margin:0;font-size:18px">${r.score >= 900 ? "Kartograf pełną gębą!" : r.score >= 700 ? "Świetna orientacja!" : r.score >= 400 ? "Dobrze. Przy kolejnej rundzie będzie lepiej." : "Mapa świata czeka na odkrycie. Zagraj jeszcze raz!"}</p><div class="xpgain">+${Math.round(xp)} XP${prev !== false ? " · nowy rekord!" : ""}</div><div class="row" style="justify-content:center"><button class="btn primary" id="again" type="button">Zagraj jeszcze raz</button></div></div>`;
+    this.renderModes(); $("#again").onclick = () => this.start(); this.run = null;
+  },
+
+  /* Sprints */
+  async startSprint(kind) {
+    await ready; await flagsReady;
+    const famous = FAMOUS || new Set(["POL","DEU","FRA","ITA","ESP","GBR","USA","CAN","MEX","BRA","ARG","CHN","JPN","IND","RUS","AUS","EGY","ZAF","NGA","KEN","TUR","GRC","PRT","NLD","BEL","CHE","AUT","CZE","SVK","HUN","UKR","SWE","NOR","FIN","DNK","IRL","KOR","SAU","IRN","ISR","CHL","COL","PER","CUB","NZL","THA","VNM","IDN","PHL","MAR","ROU","BGR","HRV","LTU","LVA","EST","ISL","PAK","BLR","SRB"]);
+    let pool = DATA.indep.filter(c => (kind === "caps" ? c.cap[0] : true));
+    if (this.level === "latwe") pool = pool.filter(c => famous.has(c.code));
+    else if (this.level === "srednie") pool = pool.filter(c => famous.has(c.code) || c.a > 2e5);
+    this.run = {type: "sprint", kind, pool, score: 0, streak: 0, best: 0, end: Date.now() + 60000, level: this.level, done: 0};
+    $("#stage").innerHTML = `<div class="card"><div class="qtop"><span id="sT">60 s</span><span id="sC"></span><span id="sS">wynik: 0</span></div><div class="pbar timer"><i id="sB" style="width:100%"></i></div><div id="sQ"></div></div>`;
+    this.run.timer = setInterval(() => this.tick(), 200);
+    this.nextSprint();
+  },
+  tick() {
+    const r = this.run; if (!r) return;
+    const left = Math.max(0, r.end - Date.now());
+    $("#sT").textContent = Math.ceil(left / 1000) + " s"; $("#sB").style.width = left / 600 + "%";
+    if (!left) this.endSprint();
+  },
+  nextSprint() {
+    const r = this.run; if (!r) return;
+    const c = r.pool[Math.floor(Math.random() * r.pool.length)];
+    const near = r.pool.filter(x => x !== c && x.r === c.r); const far = r.pool.filter(x => x !== c);
+    const wrong = pickN(near.length >= 3 ? near : far, 3);
+    const opts = shuffle([c, ...wrong]); r.cur = {c, opts};
+    $("#sQ").innerHTML = r.kind === "flags"
+      ? `<div class="qcat">Czyja to flaga?</div><img class="flag bigflag" src="${flagURL(c.c2)}" alt="Flaga do odgadnięcia"><div class="opts">${opts.map((o, j) => `<button class="opt" type="button" data-j="${j}"><kbd>${"ABCD"[j]}</kbd><span>${esc(o.n)}</span></button>`).join("")}</div>`
+      : `<div class="qcat">Jaka jest stolica?</div><h2 class="qtext" style="display:flex;gap:12px;align-items:center">${flagImg(c.c2, 54)}${esc(c.n)}</h2><div class="opts">${opts.map((o, j) => `<button class="opt" type="button" data-j="${j}"><kbd>${"ABCD"[j]}</kbd><span>${esc(o.cap[0])}</span></button>`).join("")}</div>`;
+    refreshFlags($("#sQ"));
+    $$("#sQ .opt").forEach(b => b.onclick = () => this.answerSprint(+b.dataset.j));
+  },
+  answerSprint(j) {
+    const r = this.run; if (!r || r.lock) return;
+    r.lock = true; const ok = r.cur.opts[j] === r.cur.c; const btns = $$("#sQ .opt"); tally(ok);
+    btns.forEach((b, k) => { b.disabled = true; if (r.cur.opts[k] === r.cur.c) b.classList.add("good"); });
+    if (ok) { r.score++; r.streak++; r.best = Math.max(r.best, r.streak); if (r.streak % 5 === 0) { r.end += 3000; } }
+    else { btns[j].classList.add("bad"); r.streak = 0; }
+    r.done++;
+    $("#sS").textContent = `wynik: ${r.score}`; $("#sC").innerHTML = r.streak >= 3 ? `<span class="combo">seria ×${r.streak}${r.streak % 5 === 0 ? " · +3 s!" : ""}</span>` : "";
+    setTimeout(() => { if (this.run === r) { r.lock = false; this.nextSprint(); } }, ok ? 380 : 900);
+  },
+  endSprint() {
+    const r = this.run; clearInterval(r.timer); this.run = null;
+    const xp = r.score * 5 * {latwe: 1, srednie: 1.4, trudne: 2}[r.level];
+    const prev = this.setBest(r.kind, r.score); addXP(xp); this.finishCommon();
+    if (r.kind === "flags" && r.score >= 15) award("flags");
+    if (r.kind === "caps" && r.score >= 15) award("caps");
+    $("#stage").innerHTML = `<div class="card result"><div class="qcat">${r.kind === "flags" ? "Flagi" : "Stolice"} na czas · ${LV[r.level]}</div><div class="big">${r.score}</div><p style="margin:0;font-size:18px">poprawnych odpowiedzi z ${r.done} · najdłuższa seria: ${r.best}</p><div class="xpgain">+${Math.round(xp)} XP${prev !== false ? " · nowy rekord!" : ""}</div><div class="row" style="justify-content:center"><button class="btn primary" id="again" type="button">Jeszcze raz</button></div></div>`;
+    this.renderModes(); $("#again").onclick = () => this.start();
+  },
+  key(e) {
+    if ($("#v-gry").hidden || e.target.matches("input,textarea,select")) return;
+    if (this.run?.type === "hl" && !this.run.lock) { const k = e.key.toLowerCase(); if (k === "w" || k === "arrowup") { e.preventDefault(); return this.answerHL(1); } if (k === "m" || k === "arrowdown") { e.preventDefault(); return this.answerHL(-1); } }
+    const j = "abcd1234".indexOf(e.key.toLowerCase());
+    const open = $("#stage .opt:not(:disabled)");
+    if (j >= 0 && open) { e.preventDefault(); $$("#stage .opt")[j % 4]?.click(); }
+    else if (e.key === "Enter") { const n = $("#qnext:not([hidden])") || $("#wN:not([hidden])"); if (n && document.activeElement !== n) { e.preventDefault(); n.click(); } }
+  }
+};
+
+/* ---------- Chat ---------- */
+let answerLevel = store.get("chatLevel", "normalnie");
+const LEVEL_TXT = {prosto: "Odpowiadaj bardzo prosto, krótko i przystępnie, jak dla ucznia szkoły podstawowej.", normalnie: "Dopasuj długość do pytania: na proste krótko, na trudne rzetelnie z wyjaśnieniem.", ekspert: "Odpowiadaj na poziomie akademickim: precyzyjne terminy, mechanizmy, liczby i kontekst naukowy."};
+const INSTR = () => `Jesteś GeoBotem, asystentem strony GeoFo (www.geofoapp.com) o geografii. Odpowiadaj po polsku, chyba że użytkownik pisze w innym języku. Odpowiadasz na pytania z geografii na każdym poziomie: od prostych (stolice, kontynenty, rzeki) po bardzo zaawansowane (geomorfologia, klimatologia, kartografia, odwzorowania, GIS, tektonika, hydrologia, demografia). ${LEVEL_TXT[answerLevel]} Jeśli czegoś nie wiesz na pewno, powiedz to. Formatuj zwykłym tekstem; możesz używać **pogrubień**, list z myślnikami i nagłówków ###.`;
+$$(".levelpick button").forEach(b => { b.setAttribute("aria-pressed", b.dataset.lv === answerLevel); b.onclick = () => { answerLevel = b.dataset.lv; store.set("chatLevel", answerLevel); $$(".levelpick button").forEach(x => x.setAttribute("aria-pressed", x === b)); }; });
+const chat = [];
+let busy = false, ctl = null;
+// AI engine: inside Claude -> Claude on the viewer's account; on the GeoFo Python server -> /api/chat; on plain hosting -> no chat.
+const serverChat = async (turns, opts) => {
+  const r = await fetch("api/chat", {method: "POST", headers: {"Content-Type": "application/json"}, signal: opts.signal, body: JSON.stringify({messages: turns, level: answerLevel})});
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok || !j.reply) throw {code: j.code || "upstream_error"};
+  return {text: j.reply};
+};
+const samplePromise = (async () => {
+  const s = window.claude?.use ? await claude.use("sample").catch(() => null) : null;
+  if (s) return s;
+  try { const st = await fetch("api/status").then(r => r.ok ? r.json() : null); if (st?.ai) { $("#chatNote").textContent = "Enter wysyła, Shift+Enter to nowa linia."; return serverChat; } } catch {}
+  $("#chatNote").textContent = "Czat AI działa w Claude albo na serwerze GeoFo z kluczem API. Mapy, atlas i gry działają wszędzie.";
+  return null;
+})();
+function md(s) {
+  const lines = esc(s).split("\n"); let out = "", list = null, para = [];
+  const flush = () => { if (para.length) { out += `<p>${para.join("<br>")}</p>`; para = []; } };
+  const close = () => { if (list) { out += `</${list}>`; list = null; } };
+  for (let l of lines) {
+    l = l.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/(^|\s)\*(\S[^*]*?)\*(?=\s|$|[.,;:!?])/g, "$1<i>$2</i>");
+    if (/^\s*[-*•]\s+/.test(l)) { flush(); if (list !== "ul") { close(); out += "<ul>"; list = "ul"; } out += `<li>${l.replace(/^\s*[-*•]\s+/, "")}</li>`; continue; }
+    if (/^\s*\d+[.)]\s+/.test(l)) { flush(); if (list !== "ol") { close(); out += "<ol>"; list = "ol"; } out += `<li>${l.replace(/^\s*\d+[.)]\s+/, "")}</li>`; continue; }
+    close();
+    if (/^#{1,4}\s/.test(l)) { flush(); out += `<h4>${l.replace(/^#+\s/, "")}</h4>`; }
+    else if (!l.trim()) flush(); else para.push(l);
+  }
+  flush(); close(); return out;
+}
+// Find countries mentioned in an answer (handles common Polish endings)
+function mentioned(text) {
+  if (!DATA.list) return [];
+  const t = " " + text.toLowerCase().replace(/[^a-ząćęłńóśźż\s-]/g, " ") + " ";
+  const hits = [];
+  for (const c of DATA.list) {
+    if (!DATA.mapped.has(c.code)) continue;
+    const n = c.n.toLowerCase();
+    if (n.includes(" ")) { const re = new RegExp("\\s" + n.split(/\s+/).map(w => (w.length > 4 ? w.slice(0, -2) : w).replace(/[-]/g, "\\$&")).join("[a-ząćęłńóśźż]*\\s+")); const m = re.exec(t); if (m) hits.push([m.index, c]); continue; }
+    let stem = n;
+    if (n.length >= 6) stem = n.replace(/(ska|cka)$/, "s").replace(/ś$/, "s").replace(/(ia|ja|a|y|e|i|o)$/, "");
+    else if (n.length === 5) stem = n.replace(/(a|y)$/, "");
+    const re = new RegExp("[\\s-]" + stem.replace(/[-]/g, "\\$&") + (stem === n ? "[\\s]" : "[a-ząćęłńóśźż]*[\\s]"));
+    const m = re.exec(t); if (m) hits.push([m.index, c]);
+  }
+  if (/ polsce | polski | polską /.test(t) && !hits.some(h => h[1].code === "POL")) hits.push([t.search(/ pols/), DATA.c.POL]);
+  return [...new Map(hits.sort((a, b) => a[0] - b[0]).map(h => [h[1].code, h[1]])).values()].slice(0, 8);
+}
+function bubble(cls, html) {
+  $("#empty")?.remove();
+  const d = document.createElement("div"); d.className = "msg " + cls; d.innerHTML = html;
+  $("#log").append(d); $("#log").scrollTop = $("#log").scrollHeight; return d;
+}
+const ERR = {
+  not_granted: "Aby korzystać z czatu, zezwól stronie na zadawanie pytań Claude'owi.",
+  rate_limited: "Za dużo pytań naraz. Odczekaj chwilę i spróbuj ponownie.",
+  prompt_too_large: "Rozmowa jest za długa. Odśwież stronę, żeby zacząć nową.",
+  refused: "Na to pytanie GeoBot nie odpowie. Spróbuj zapytać inaczej.",
+  sampling_disabled: "Czat AI jest wyłączony na tym koncie.",
+};
+function decorate(b, text) {
+  b.innerHTML = md(text);
+  const cs = mentioned(text);
+  if (cs.length) {
+    const box = document.createElement("div"); box.className = "onmap";
+    box.innerHTML = `<span class="note">Pokaż na mapie:</span><div class="chipset">${cs.map(c => `<button class="chip" type="button" data-c="${c.code}">${flagImg(c.c2, 18)}${esc(c.n)}</button>`).join("")}</div>`;
+    b.append(box); refreshFlags(box);
+    $$(".chip", box).forEach(x => x.onclick = () => showOnMap(x.dataset.c));
+  }
+}
+async function send(text) {
+  text = text.trim(); if (!text || busy) return;
+  const s = await samplePromise;
+  if (!s) { bubble("user", esc(text)); bubble("bot", `<p>${esc($("#chatNote").textContent)}</p>`); return; }
+  busy = true; $("#askBtn").textContent = "Stop"; $("#askInput").value = "";
+  bubble("user", esc(text));
+  chat.push({role: "user", content: text});
+  const turns = chat.slice(-12).map(m => ({...m}));
+  if (turns[0].role !== "user") turns.shift();
+  if (s !== serverChat) turns[0].content = INSTR() + "\n\nPytanie użytkownika:\n" + turns[0].content;
+  const b = bubble("bot wait", "GeoBot myśli…");
+  ctl = new AbortController();
+  try {
+    const {text: ans} = await s(turns, {cache: false, signal: ctl.signal, onText: ({text}) => { b.classList.remove("wait"); b.innerHTML = md(text); $("#log").scrollTop = $("#log").scrollHeight; }});
+    b.classList.remove("wait"); decorate(b, ans);
+    chat.push({role: "assistant", content: ans});
+    P.asked++; saveP(); if (P.asked >= 5) award("curious");
+  } catch (e) {
+    b.classList.remove("wait");
+    if (e?.text) { decorate(b, e.text); chat.push({role: "assistant", content: e.text}); }
+    else { b.innerHTML = `<p>${esc(e?.code === "cancelled" ? "Zatrzymano." : ERR[e?.code] || "Nie udało się połączyć z AI. Spróbuj ponownie za chwilę.")}</p>`; chat.pop(); }
+  } finally { busy = false; ctl = null; $("#askBtn").textContent = "Wyślij"; $("#log").scrollTop = $("#log").scrollHeight; }
+}
+$("#askForm").onsubmit = e => { e.preventDefault(); if (busy) ctl?.abort(); else send($("#askInput").value); };
+$("#askInput").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); if (!busy) send($("#askInput").value); } });
+$$("#chips button").forEach(b => b.onclick = () => send(b.textContent));
+function askBot(q) { location.hash = "czat"; setTimeout(() => send(q), 80); }
+
+FAMOUS = new Set(["POL","DEU","FRA","ITA","ESP","GBR","USA","CAN","MEX","BRA","ARG","CHN","JPN","IND","RUS","AUS","EGY","ZAF","NGA","KEN","TUR","GRC","PRT","NLD","BEL","CHE","AUT","CZE","SVK","HUN","UKR","SWE","NOR","FIN","DNK","IRL","KOR","SAU","IRN","ISR","CHL","COL","PER","CUB","NZL","THA","VNM","IDN","PHL","MAR","ROU","BGR","HRV","LTU","LVA","EST","ISL","PAK","BLR","SRB"]);
+function renderChallenge() {
+  const done = P.daily?.date === todayKey();
+  $("#challenge").innerHTML = `<div class="ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M9 15l2 2 4-4"/></svg></div>
+    <div style="min-width:0"><div class="eyebrow">Wyzwanie dnia</div><h3 style="font-size:22px">${done ? `Dzisiaj: ${P.daily.score} / 5` : "5 pytań czeka na Ciebie"}</h3><div class="streak">${dailyStatus()}</div></div>
+    <button class="btn ${done ? "" : "primary"}" type="button" id="chGo">${done ? "Zobacz gry" : "Zagraj teraz"}</button>`;
+  $("#chGo").onclick = () => { Games.mode = "daily"; store.set("mode", "daily"); location.hash = "gry"; if (!$("#v-gry").hidden) Games.init(); };
+}
+renderChallenge();
+renderFact();
+applyTheme();
+renderDaily();
+route();
+</script>
+</body></html>
