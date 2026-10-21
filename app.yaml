@@ -1,0 +1,7 @@
+# Google App Engine (środowisko standardowe)
+runtime: python312
+entrypoint: gunicorn -b :$PORT app:app
+
+env_variables:
+  ANTHROPIC_MODEL: "claude-sonnet-5-5"
+  # Klucza nie wpisuj tutaj na stałe — lepiej użyj Secret Managera (patrz README)

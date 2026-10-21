@@ -1,4 +1,21 @@
-<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="GeoFo 2.3.1: mapy topograficzne, kartograficzne i dokładne (Mapy.com), atlas krajów z ludnością, słowniczek, quizy i gry geograficzne oraz czat AI o geografii."><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>GeoFo</title>
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="GeoFo: mapy topograficzne, kartograficzne i dokładne, atlas 250 państw z ludnością, quizy i gry z geografii.">
+<meta name="theme-color" content="#0e2821">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GeoFo">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>GeoFo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -301,6 +318,11 @@ form.ask textarea { flex: 1; min-width: 0; resize: none; border: 1px solid var(-
 .dnote .card { max-width: 560px; display: grid; gap: 12px; }
 .dnote ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
 .dpin { width: 18px; height: 18px; border-radius: 50%; background: var(--accent-2); border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,.4); }
+/* Install (PWA) */
+.install { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 16px; align-items: center; margin-top: 14px; border-color: var(--accent); }
+.install img { width: 52px; height: 52px; border-radius: 14px; }
+.install p { margin: 2px 0 0; font-size: 15px; color: var(--muted); }
+@media (max-width: 640px) { .install { grid-template-columns: auto minmax(0, 1fr); } .install .btn { grid-column: 1 / -1; justify-self: start; } }
 @media (max-width: 900px) {
   .hero { grid-template-columns: 1fr; }
   .globe-wrap { max-width: 420px; }
@@ -364,6 +386,7 @@ form.ask textarea { flex: 1; min-width: 0; resize: none; border: 1px solid var(-
           </div>
         </div>
         <div class="card daily" id="daily"></div>
+        <div class="card install" id="installCard" hidden></div>
         <div class="card challenge" id="challenge"></div>
         <div class="card facts-card" id="factCard"></div>
         <div class="card news" id="news"></div>
@@ -533,8 +556,9 @@ function loadHD() {
 }
 
 /* ---------- Version, theme ---------- */
-const VERSION = "2.3.1";
+const VERSION = "2.4.0";
 const CHANGES = [
+  ["Aplikacja GeoFo", "GeoFo można zainstalować na telefonie i komputerze: własna ikona, pełny ekran i działanie bez internetu"],
   ["Ludność krajów i stolic", "po kliknięciu kraju na mapie widać liczbę mieszkańców, gęstość zaludnienia, liczbę mieszkańców stolicy i powierzchnię stolicy"],
   ["Poprawka 2.2.1", "Mapy dokładne pokazują mapę Mapy.com od razu w GeoFo, bez logowania i bez klucza API"],
   ["Mapy dokładne", "nowa zakładka ze szczegółowymi mapami Mapy.com: ulice, budynki, szlaki turystyczne i zdjęcia lotnicze, z wyszukiwarką adresów"],
@@ -1999,8 +2023,31 @@ function renderChallenge() {
 }
 renderChallenge();
 renderFact();
+/* ---------- Installable app (PWA) ---------- */
+(() => {
+  const card = $("#installCard"), inClaude = !!window.claude, web = /^https?:$/.test(location.protocol);
+  const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  if (inClaude || !web || standalone) return;
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+  const ico = '<img src="icons/icon-192.png" alt="">';
+  let deferred = null;
+  addEventListener("beforeinstallprompt", e => {
+    e.preventDefault(); deferred = e;
+    card.innerHTML = `${ico}<div style="min-width:0"><div class="eyebrow">Aplikacja GeoFo</div><h3 style="font-size:22px">Zainstaluj GeoFo na tym urządzeniu</h3><p>Własna ikona, pełny ekran i działanie bez internetu.</p></div><button class="btn primary" type="button" id="installBtn">Zainstaluj</button>`;
+    card.hidden = false;
+    $("#installBtn").onclick = async () => { deferred.prompt(); const r = await deferred.userChoice.catch(() => null); deferred = null; card.hidden = true; if (r?.outcome === "accepted") toast("GeoFo zainstalowane. Znajdziesz je wśród aplikacji."); };
+  });
+  addEventListener("appinstalled", () => { card.hidden = true; });
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  if (ios) {
+    card.innerHTML = `${ico}<div style="min-width:0"><div class="eyebrow">Aplikacja GeoFo</div><h3 style="font-size:22px">Dodaj GeoFo do ekranu początkowego</h3><p>W Safari dotknij przycisku <b>Udostępnij</b> (kwadrat ze strzałką), a potem <b>Do ekranu początkowego</b>.</p></div>`;
+    card.hidden = false;
+  }
+})();
 applyTheme();
 renderDaily();
 route();
 </script>
-</body></html>
+
+</body>
+</html>

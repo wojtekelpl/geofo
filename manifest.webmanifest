@@ -1,0 +1,31 @@
+{
+  "id": "./",
+  "name": "GeoFo — mapy, atlas i quizy z geografii",
+  "short_name": "GeoFo",
+  "description": "Mapy topograficzne, kartograficzne i dokładne, atlas 250 państw z ludnością, 10 200 pytań w quizach, gry geograficzne i odznaki.",
+  "lang": "pl",
+  "dir": "ltr",
+  "start_url": "./#start",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#0e2821",
+  "theme_color": "#0e2821",
+  "categories": ["education", "games", "travel"],
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable"},
+    {"src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "screenshots": [
+    {"src": "icons/screenshot-wide.png", "sizes": "1400x900", "type": "image/png", "form_factor": "wide", "label": "Mapa kartograficzna z informacjami o Polsce"},
+    {"src": "icons/screenshot-narrow.png", "sizes": "400x820", "type": "image/png", "form_factor": "narrow", "label": "GeoFo na telefonie"}
+  ],
+  "shortcuts": [
+    {"name": "Gry i quizy", "short_name": "Gry", "url": "./#gry", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]},
+    {"name": "Mapy kartograficzne", "short_name": "Mapy", "url": "./#carto", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]},
+    {"name": "Atlas krajów", "short_name": "Atlas", "url": "./#atlas", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]}
+  ]
+}
