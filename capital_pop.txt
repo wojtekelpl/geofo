@@ -1,0 +1,236 @@
+# Source: https://en.wikipedia.org/wiki/List_of_national_capitals_by_population (retrieved 2026-10-18)
+China;Beijing;21,858,000;2018
+Japan;Tokyo;14,094,034;2023
+Russia;Moscow;13,274,285;2025
+DR Congo;Kinshasa;12,691,000;2017
+Indonesia;Jakarta;10,562,088;2020
+Peru;Lima;10,151,000;2023
+Egypt;Cairo;10,107,125;2022
+South Korea;Seoul;9,508,451;2022
+Mexico;Mexico City;9,209,944;2020
+United Kingdom;London;9,002,488;2020
+Bangladesh;Dhaka;8,906,039;2011
+Iran;Tehran;8,693,706;2016
+Thailand;Bangkok;8,305,218;2010
+Vietnam;Hanoi;8,053,663;2019
+Iraq;Baghdad;7,682,136;2021
+Saudi Arabia;Riyadh;7,676,654;2018
+Hong Kong (China);Hong Kong;7,534,200;2024
+Colombia;Bogotá;7,181,469;2011
+Chile;Santiago;6,310,000;2012
+Turkey;Ankara;5,747,325;2021
+Singapore;Singapore;5,917,600;2023
+Afghanistan;Kabul;4,601,789;2021
+Kenya;Nairobi;4,397,073;2019
+Jordan;Amman;4,061,150;2021
+Algeria;Algiers;3,915,811;2011
+Germany;Berlin;3,677,472;2021
+Spain;Madrid;3,305,408;2021
+Argentina;Buenos Aires;3,120,612;2022
+Ethiopia;Addis Ababa;3,040,740;2012
+Brazil;Brasília;2,982,818;2024
+Guatemala;Guatemala City;2,934,841;2020
+South Africa;Pretoria;2,921,488;2011
+Ukraine;Kyiv;2,920,873;2021
+North Korea;Pyongyang;2,870,000;2016
+Uzbekistan;Tashkent;2,860,600;2022
+Italy;Rome;2,761,632;2022
+Ecuador;Quito;2,800,388;2020
+Cameroon;Yaoundé;2,765,568;2015
+Zambia;Lusaka;2,731,696;2020
+Sudan;Khartoum;2,682,431;2012
+Taiwan;Taipei;2,608,332;2020
+Yemen;Sanaa;2,575,347;2012
+Angola;Luanda;2,571,861;2020
+Burkina Faso;Ouagadougou;2,453,496;2019
+Ghana;Accra;2,388,000;2017
+Somalia;Mogadishu;2,388,000;2021
+Azerbaijan;Baku;2,303,100;2022
+Cambodia;Phnom Penh;2,281,951;2019
+Venezuela;Caracas;2,245,744;2016
+France;Paris;2,139,907;2022
+Cuba;Havana;2,132,183;2020
+Zimbabwe;Harare;2,123,132;2012
+Syria;Damascus;2,079,000;2019
+Belarus;Minsk;1,996,553;2022
+Austria;Vienna;1,962,779;2022
+Poland;Warsaw;1,863,056;2021
+Philippines;Manila;1,846,513;2020
+Mali;Bamako;1,809,106;2009
+Malaysia;Kuala Lumpur;1,782,500;2019
+Romania;Bucharest;1,716,983;2021
+Hungary;Budapest;1,706,851;2022
+Congo;Brazzaville;1,696,392;2015
+Serbia;Belgrade;1,688,667;2021
+Uganda;Kampala;1,680,600;2019
+Guinea;Conakry;1,660,973;2014
+Kazakhstan;Astana;1,511,807;2024
+Mongolia;Ulaanbaatar;1,466,125;2020
+Honduras;Tegucigalpa;1,444,085;2021
+Senegal;Dakar;1,438,725;2021
+Czech Republic;Prague;1,357,326;2023
+Niger;Niamey;1,334,984;2020
+Uruguay;Montevideo;1,319,108;2011
+Bulgaria;Sofia;1,307,439;2021
+Oman;Muscat;1,294,101;2021
+Madagascar;Antananarivo;1,275,207;2018
+Nigeria;Abuja;1,235,880;2011
+Georgia;Tbilisi;1,201,769;2022
+Mauritania;Nouakchott;1,195,600;2019
+Qatar;Doha;1,186,023;2020
+Libya;Tripoli;1,170,000;2019
+Myanmar;Naypyidaw;1,160,242;2014
+Rwanda;Kigali;1,132,686;2012
+Mozambique;Maputo;1,124,988;2020
+Dominican Republic;Santo Domingo;1,111,838;2010
+Armenia;Yerevan;1,096,100;2021
+Panama;Panama City;1,086,990;2023
+Kyrgyzstan;Bishkek;1,074,075;2021
+Sierra Leone;Freetown;1,055,964;2015
+Nicaragua;Managua;1,055,247;2020
+Canada;Ottawa;1,017,449;2021
+Pakistan;Islamabad;1,014,825;2017
+Liberia;Monrovia;1,010,970;2008
+United Arab Emirates;Abu Dhabi;1,010,092;2020
+Malawi;Lilongwe;989,318;2018
+Haiti;Port-au-Prince;987,310;2015
+Sweden;Stockholm;978,770;2021
+Eritrea;Asmara;963,000;2020
+Israel;Jerusalem;936,425;2019
+Laos;Vientiane;927,724;2019
+Chad;N'Djamena;916,000;2009
+Netherlands;Amsterdam;905,234;2022
+Central African Republic;Bangui;889,231;2020
+Tajikistan;Dushanbe;863,400;2020
+Nepal;Kathmandu;845,767;2021
+Togo;Lomé;837,437;2010
+Turkmenistan;Ashgabat;791,000;2017
+Moldova;Chişinău;779,300;2019
+Croatia;Zagreb;769,944;2021
+Gabon;Libreville;703,904;2013
+Norway;Oslo;697,010;2021
+Macau (China);Macau;671,900;2022
+United States;Washington, D.C.;670,050;2021
+Jamaica;Kingston;662,491;2019
+Finland;Helsinki;658,864;2021
+Tunisia;Tunis;638,845;2014
+Denmark;Copenhagen;638,117;2021
+Greece;Athens;637,798;2021
+Latvia;Riga;605,802;2021
+Djibouti;Djibouti City;604,013;2012
+Ireland;Dublin;592,713;2022
+Morocco;Rabat;577,827;2014
+Lithuania;Vilnius;576,195;2022
+El Salvador;San Salvador;570,459;2019
+Albania;Tirana;557,422;2011
+North Macedonia;Skopje;544,086;2015
+South Sudan;Juba;525,953;2017
+Paraguay;Asunción;521,559;2020
+Portugal;Lisbon;509,614;2020
+Guinea-Bissau;Bissau;492,004;2015
+Slovakia;Bratislava;440,948;2020
+Estonia;Tallinn;438,341;2021
+Australia;Canberra;431,380;2020
+Namibia;Windhoek;431,000;2020
+Tanzania;Dodoma;410,956;2012
+Papua New Guinea;Port Moresby;364,145;2011
+Ivory Coast;Yamoussoukro;361,893;2020
+Lebanon;Beirut;361,366;2014
+Bolivia;Sucre;360,544;2022
+Puerto Rico;San Juan;342,259;2020
+Costa Rica;San José;342,188;2018
+Lesotho;Maseru;330,760;2016
+Cyprus;Nicosia;326,739;2016
+Slovenia;Ljubljana;285,604;2021
+Timor-Leste;Dili;277,279;2015
+Bosnia and Herzegovina;Sarajevo;275,524;2013
+Bahamas;Nassau;274,400;2016
+Botswana;Gaborone;273,602;2020
+Benin;Porto-Novo;264,320;2013
+India;New Delhi;249,998;2011
+Suriname;Paramaribo;240,924;2012
+Kosovo;Pristina;227,466;2024
+Western Sahara;Laayoune;217,732;2014
+New Zealand;Wellington;217,000;2021
+Maldives;Malé;211,908;2022
+Bahrain;Manama;200,000;2020
+Montenegro;Podgorica;190,488;2020
+Belgium;Brussels;187,686;2022
+Cape Verde;Praia;159,050;2017
+Mauritius;Port Louis;147,066;2018
+Curaçao;Willemstad;136,660;2011
+Luxembourg;Luxembourg City;136,208;2025
+Burundi;Gitega;135,467;2020
+Switzerland;Bern;134,591;2020
+Iceland;Reykjavík;133,262;2021
+Guyana;Georgetown;118,363;2012
+Bhutan;Thimphu;114,551;2017
+Comoros;Moroni;111,326;2016
+Barbados;Bridgetown;110,000;2014
+Sri Lanka;Sri Jayawardenepura Kotte;107,925;2012
+Brunei;Bandar Seri Begawan;100,700;2007
+Eswatini;Mbabane;94,874;2010
+New Caledonia;Nouméa;94,285;2019
+Fiji;Suva;93,970;2017
+Solomon Islands;Honiara;92,344;2021
+São Tomé and Príncipe;São Tomé;71,868;2015
+Kiribati;Tarawa;70,480;2020
+Kuwait;Kuwait City;55,159;2021
+Vanuatu;Port Vila;51,437;2016
+Northern Mariana Islands;Saipan;47,565;2017
+Samoa;Apia;41,611;2021
+Palestine;Ramallah;38,998;2017
+Monaco;Monaco;38,350;2020
+Jersey;Saint Helier;37,540;2018
+Trinidad and Tobago;Port of Spain;37,074;2011
+Cayman Islands;George Town;34,399;2021
+Gibraltar;Gibraltar;34,003;2020
+Grenada;St. George's;33,734;2012
+Gambia;Banjul;31,301;2013
+Aruba;Oranjestad;28,294;2010
+Isle of Man;Douglas;27,938;2011
+Marshall Islands;Majuro;27,797;2011
+Tonga;Nukuʻalofa;27,600;2022
+Seychelles;Victoria;26,450;2010
+French Polynesia;Papeete;26,926;2017
+Andorra;Andorra la Vella;22,873;2022
+Faroe Islands;Tórshavn;22,738;2022
+Antigua and Barbuda;St. John's;22,219;2011
+Belize;Belmopan;20,621;2016
+Saint Lucia;Castries;20,000;2013
+Guernsey;Saint Peter Port;18,958;2019
+Greenland;Nuuk;18,800;2021
+Dominica;Roseau;14,725;2011
+U.S. Virgin Islands;Charlotte Amalie;14,477;2020
+Saint Kitts and Nevis;Basseterre;14,000;2018
+Saint Vincent and the Grenadines;Kingstown;12,909;2012
+British Virgin Islands;Road Town;12,603;2012
+Åland;Mariehamn;11,736;2021
+Federated States of Micronesia;Palikir;6,647;2010
+Tuvalu;Funafuti;6,320;2017
+Malta;Valletta;5,827;2019
+Liechtenstein;Vaduz;5,774;2021
+Saint Pierre and Miquelon;Saint-Pierre;5,394;2019
+Cook Islands;Avarua;4,906;2016
+San Marino;City of San Marino;4,061;2021
+Turks and Caicos Islands;Cockburn Town;3,720;2016
+American Samoa;Pago Pago;3,656;2010
+Saint Martin;Marigot;3,229;2017
+Saint Barthélemy;Gustavia;2,615;2010
+Falkland Islands;Stanley;2,460;2016
+Svalbard;Longyearbyen;2,417;2020
+Sint Maarten;Philipsburg;1,894;2011
+Christmas Island;Flying Fish Cove;1,599;2016
+Anguilla;The Valley;1,067;2011
+Guam;Hagåtña;1,051;2010
+Wallis and Futuna;Mata Utu;1,029;2018
+Bermuda;Hamilton;854;2016
+Nauru;Yaren;747;2011
+Saint Helena;Jamestown;629;2016
+Niue;Alofi;597;2017
+Tokelau;Atafu;541;2016
+Vatican City;Vatican City;764;2023
+Norfolk Island;Kingston;341;2015
+Cocos (Keeling) Islands;West Island;134;2011
+Pitcairn Islands;Adamstown;35;2023
+South Georgia and the South Sandwich Islands;King Edward Point;22;2018

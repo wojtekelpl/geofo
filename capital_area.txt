@@ -1,0 +1,232 @@
+# Source: https://en.wikipedia.org/wiki/List_of_national_capitals_by_area (retrieved 2026-10-18)
+Turkey;Ankara;25,632
+China;Beijing;16,410.5
+Democratic Republic of the Congo;Kinshasa;9,965
+Myanmar;Naypyidaw;7,054
+Brazil;Brasília;5,802
+Namibia;Windhoek;5,133
+Mongolia;Ulaanbaatar;4,704.4
+Laos;Vientiane;3,920
+Oman;Muscat;3,500
+Vietnam;Hanoi;3,358.6
+Egypt;Cairo;3,085.12
+Canada;Ottawa;2,970.30
+Hong Kong (China);Hong Kong;2,754.97
+Peru;Lima;2,672.3
+Tanzania;Dodoma;2,576
+Russia;Moscow;2,561.4
+South Africa;Cape Town;2,461
+Japan;Tokyo;2,194.07
+Azerbaijan;Baku;2,140
+Panama;Panama City;2,082
+Ivory Coast;Yamoussoukro;2,075
+Saudi Arabia;Riyadh;1,973
+Bolivia;Sucre;1,768
+Jordan;Amman;1,680
+Colombia;Bogotá;1587
+United Kingdom;London;1,572
+Thailand;Bangkok;1,568.737
+Libya;Tripoli;1,507
+Dominican Republic;Santo Domingo;1,502
+Honduras;Tegucigalpa;1,502
+Mexico;Mexico City;1,485
+Nigeria;Abuja;1,476
+Italy;Rome;1,287.36
+Albania;Tirana;1,110
+Mauritania;Nouakchott;1,000
+Guatemala;Guatemala City;997
+Zimbabwe;Harare;982.3
+United Arab Emirates;Abu Dhabi;972
+Germany;Berlin;891.3
+Kuwait;Kuwait City;860
+Ukraine;Kyiv;839
+North Korea;Pyongyang;829.1
+Australia;Canberra;814.2
+Kazakhstan;Astana;810.2
+Singapore;Singapore;735.7
+Rwanda;Kigali;730
+Cuba;Havana;728.26
+Malawi;Lilongwe;727.79
+Finland;Helsinki;715.48
+Kenya;Nairobi;696.1
+South Africa;Pretoria;687.54
+Cambodia;Phnom Penh;679
+Iraq;Baghdad;673
+Indonesia;Jakarta;660.982
+Croatia;Zagreb;641.2
+Chile;Santiago;641
+Uzbekistan;Tashkent;631.29
+Iran;Tehran;615
+South Korea;Seoul;605.21
+Spain;Madrid;604.31
+Republic of the Congo;Brazzaville;588
+North Macedonia;Skopje;571.46
+Niger;Niamey;552.27
+Ethiopia;Addis Ababa;527
+Hungary;Budapest;525.2
+Kosovo;Pristina;523.13
+Poland;Warsaw;517.24
+Georgia;Tbilisi;504.3
+Bulgaria;Sofia;500
+Czech Republic;Prague;496.21
+Norway;Oslo;480
+Bolivia;La Paz;472
+Turkmenistan;Ashgabat;470
+Guinea;Conakry;450
+Venezuela;Caracas;433
+Austria;Vienna;414.78
+Belarus;Minsk;409.53
+Lithuania;Vilnius;401
+Serbia;Belgrade;389.12
+Kyrgyzstan;Bishkek;386
+Afghanistan;Kabul;381.3
+Somalia;Mogadishu;370
+Slovakia;Bratislava;367.584
+Algeria;Algiers;363
+Zambia;Lusaka;360
+Mozambique;Maputo;347.69
+Sudan;Khartoum;322.7
+Bangladesh;Dhaka;306
+Latvia;Riga;304
+New Zealand;Wellington;289.91
+Slovenia;Ljubljana;274.99
+Taiwan;Taipei;271.80
+Nicaragua;Managua;267
+Western Sahara;Laayoune;247.8
+Mali;Bamako;245.0
+Iceland;Reykjavík;244
+Malaysia;Kuala Lumpur;243
+Romania;Bucharest;240
+Papua New Guinea;Port Moresby;240
+South Africa;Bloemfontein;236.17
+Armenia;Yerevan;223
+Pakistan;Islamabad;220.15
+Netherlands;Amsterdam;219.32
+Tunisia;Tunis;212
+Argentina;Buenos Aires;205.9
+Tajikistan;Dushanbe;203
+Uruguay;Montevideo;201
+Bahamas;Nassau;200
+Djibouti;Djibouti City;200
+Puerto Rico;San Juan;199
+Ecuador;Quito;197.5
+Liberia;Monrovia;194.25
+Uganda;Kampala;189
+Sweden;Stockholm;188
+Suriname;Paramaribo;182
+Cameroon;Yaoundé;180
+East Timor;Dili;178.62
+United States;Washington, D.C.;177.0
+Faroe Islands;Tórshavn;173
+Botswana;Gaborone;169
+Belgium;Brussels;162.42
+Estonia;Tallinn;159.2
+Bosnia and Herzegovina;Sarajevo;141.5
+Lesotho;Maseru;137.5
+Qatar;Doha;132
+Yemen;Sana'a;126
+Israel;Jerusalem;125.126
+Samoa;Apia;123.81
+Moldova;Chișinău;123
+Macau (China);Macau;119.3
+Northern Mariana Islands;Saipan;118.98
+Ireland;Dublin;117.8
+Paraguay;Asunción;117
+Morocco;Rabat;117
+Angola;Luanda;116
+Eswatini;Lobamba;112
+Benin;Porto-Novo;110
+Montenegro;Podgorica;108
+Micronesia;Palikir;107.41
+France;Paris;105.4
+Syria;Damascus;105
+Chad;N'Djamena;104
+Cape Verde;Praia;102.6
+Brunei;Bandar Seri Begawan;100.36
+Portugal;Lisbon;100.05
+Togo;Lomé;99.14
+Denmark;Copenhagen;90.01
+Madagascar;Antananarivo;85
+Sierra Leone;Freetown;82.48
+Eswatini;Mbabane;81.76
+Senegal;Dakar;79.83
+Saint Lucia;Castries;79
+Guinea-Bissau;Bissau;77.5
+El Salvador;San Salvador;72.25
+Guyana;Georgetown;70
+Central African Republic;Bangui;67
+Grenada;Saint George's;67
+Gabon;Libreville;65.42
+South Sudan;Juba;52
+Switzerland;Bern;51.62
+Luxembourg;Luxembourg City;51.46
+Nepal;Kathmandu;49.45
+Greenland;Nuuk;49
+Mauritius;Port Louis;46.7
+Niue;Alofi;46.48
+New Caledonia;Nouméa;45.7
+Eritrea;Asmara;45
+Costa Rica;San José;44.62
+India;New Delhi;42.7
+Philippines;Manila;42.34
+Barbados;Bridgetown;40
+Greece;Athens;38.964
+Sri Lanka;Colombo;37.31
+Haiti;Port-au-Prince;36.04
+Belize;Belmopan;32.78
+Kiribati;Tarawa;31.02
+Bahrain;Manama;30
+Comoros;Moroni;30
+Cayman Islands;George Town;29
+Cook Islands;Avarua;28
+Fiji;Suva;26.24
+Bhutan;Thimphu;26.1
+Jamaica;Kingston;25
+Saint Pierre and Miquelon;Saint Pierre;25
+Vanuatu;Port Vila;23.6
+Aruba;Oranjestad;23
+Burundi;Gitega;22
+Solomon Islands;Honiara;22
+Saint Martin;Marigot;21.6
+Equatorial Guinea;Malabo;21
+Åland;Mariehamn;20.75
+Ghana;Accra;20.4
+Seychelles;Victoria;20.1
+Cyprus;Nicosia;20.08
+Lebanon;Beirut;19
+French Polynesia;Papeete;17.4
+Turks and Caicos Islands;Cockburn Town;17.39
+Liechtenstein;Vaduz;17.28
+São Tomé and Príncipe;São Tomé;17
+Sri Lanka;Sri Jayawardenepura Kotte;17
+Palestine;Ramallah;16.3
+Andorra;Andorra la Vella;12
+The Gambia;Banjul;12
+Trinidad and Tobago;Port of Spain;12
+Maldives;Malé;11.22
+Isle of Man;Douglas;11
+Jersey;Saint Helier;10.6
+Antigua and Barbuda;Saint John's;10
+Marshall Islands;Majuro;9.7
+American Samoa;Pago Pago;8.85
+San Marino;City of San Marino;7.09
+Gibraltar;Gibraltar;6.8
+Guernsey;Saint Peter Port;6.5
+Cocos (Keeling) Islands;West Island;6.23
+Saint Kitts and Nevis;Basseterre;6.1
+Dominica;Roseau;5.4
+Pitcairn Islands;Adamstown;4.6
+Wallis and Futuna;Mata-Utu;4.33
+Saint Helena, Ascension and Tristan da Cunha;Jamestown;3.6
+Saint Barthélemy;Gustavia;3.4
+US Virgin Islands;Charlotte Amalie;3.14
+Guam;Hagåtña;3
+Tuvalu;Funafuti;2.79
+Anguilla;The Valley;2.72
+Falkland Islands;Stanley;2.5
+Monaco;Monaco;2.08
+Nauru;Yaren;1.5
+Bermuda;Hamilton;0.7
+Malta;Valletta;0.61
+Vatican City;Vatican City;0.49
+Palau;Ngerulmud;0.45

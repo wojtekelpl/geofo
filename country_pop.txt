@@ -1,0 +1,236 @@
+# Source: https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_by_population (retrieved 2026-10-18)
+India;1,429,404,000;1 Jul 2026
+China;1,404,890,000;31 Dec 2025
+United States;341,784,857;1 Jul 2025
+Indonesia;288,315,089;31 Dec 2025
+Pakistan;241,499,431;1 Mar 2023
+Nigeria;223,800,000;1 Jul 2023
+Brazil;214,211,951;1 Jul 2026
+Bangladesh;169,828,911;14 Jun 2022
+Russia;146,028,325;1 Jan 2025
+Mexico;131,231,919;30 Jun 2026
+Japan;122,680,000;1 Aug 2026
+Democratic Republic of the Congo;116,452,162;1 Jul 2026
+Philippines;114,849,400;1 Jul 2026
+Ethiopia;111,652,998;1 Jul 2025
+Egypt;108,613,296;1 Jan 2026
+Vietnam;102,300,000;31 Dec 2025
+Iran;87,134,000;21 Mar 2026
+Turkey;86,092,168;31 Dec 2025
+Germany;83,467,117;31 Dec 2025
+Thailand;70,250,751;2025
+Tanzania;70,038,850;1 Jul 2026
+United Kingdom;69,487,000;30 Jun 2025
+France;69,081,996;1 Jan 2026
+South Africa;63,522,380;30 Jun 2026
+Italy;58,943,673;30 Jun 2026
+Kenya;54,227,015;1 Jul 2026
+Colombia;53,399,171;1 Jan 2026
+Sudan;53,282,719;1 Jul 2026
+Myanmar;51,375,327;15 Oct 2024
+South Korea;51,088,284;31 Jul 2026
+Spain;49,801,559;1 Jul 2026
+Algeria;47,400,000;1 Jan 2025
+Argentina;46,466,688;1 Jul 2026
+Iraq;46,118,793;21 Nov 2024
+Uganda;45,905,417;10 May 2024
+Afghanistan;43,844,000;1 Jul 2025
+Canada;41,417,056;1 Apr 2026
+Uzbekistan;39,047,321;15 Jan 2026
+Angola;38,778,554;1 Jan 2026
+Morocco;37,254,695;1 Jul 2026
+Poland;37,243,000;30 Jun 2026
+Saudi Arabia;35,300,280;1 Jul 2024
+Mozambique;34,958,973;1 Jul 2026
+Malaysia;34,389,400;30 Jun 2026
+Ghana;34,378,768;1 Jul 2026
+Peru;34,157,732;4 Aug 2025
+Ivory Coast;33,293,101;1 Jul 2026
+Yemen;32,684,503;1 Jul 2023
+Madagascar;32,658,977;1 Jul 2026
+Nepal;30,034,040;1 Jul 2026
+Cameroon;29,442,327;1 Jul 2025
+Ukraine;28,700,000;1 Sep 2025
+Venezuela;28,633,711;1 Jul 2026
+Australia;27,801,023;31 Dec 2025
+Niger;27,522,750;1 Jul 2025
+Syria;26,472,497;1 Jul 2026
+North Korea;25,950,000;1 Jul 2024
+Burkina Faso;24,736,828;1 Jul 2026
+Mali;23,929,000;1 Jul 2024
+Taiwan;23,224,721;31 Aug 2026
+Zambia;23,003,214;1 Jul 2026
+Sri Lanka;21,756,000;1 Jul 2025
+Malawi;21,201,635;1 Jul 2026
+Kazakhstan;20,604,819;1 Aug 2026
+Somalia;20,305,907;1 Jul 2026
+Chile;20,150,948;30 Jun 2026
+Chad;20,031,602;1 Jul 2026
+Senegal;19,575,061;1 Jul 2026
+Romania;19,041,322;1 Jan 2026
+Guatemala;18,312,373;1 Jul 2026
+Ecuador;18,243,816;1 Jul 2026
+Netherlands;18,153,271;31 Jul 2026
+Cambodia;17,816,143;1 Jul 2026
+Guinea;17,521,167;1 Jul 2025
+Zimbabwe;17,073,087;1 Jul 2025
+South Sudan;15,786,898;1 Jul 2025
+Rwanda;14,418,145;1 Jul 2026
+Benin;13,551,992;1 Jul 2026
+Burundi;12,332,788;16 Aug 2024
+Tunisia;11,992,843;1 Jan 2026
+Belgium;11,942,772;1 Jul 2026
+Jordan;11,937,000;31 Dec 2025
+Haiti;11,867,032;1 Jul 2024
+Portugal;11,424,031;31 Dec 2025
+Bolivia;11,365,333;23 Mar 2024
+United Arab Emirates;11,294,243;31 Dec 2024
+Czech Republic;10,903,655;30 Jun 2026
+Dominican Republic;10,771,504;10 Nov 2022
+Tajikistan;10,721,000;1 Jan 2026
+Sweden;10,613,531;31 Jul 2026
+Greece;10,372,335;1 Jan 2025
+Israel;10,305,000;31 Aug 2026
+Azerbaijan;10,273,450;1 Jul 2026
+Honduras;10,186,738;1 Jul 2026
+Papua New Guinea;10,185,363;16 Jun 2024
+Hungary;9,488,428;1 Jan 2026
+Cuba;9,434,593;31 Dec 2025
+Sierra Leone;9,270,700;1 Jul 2026
+Austria;9,217,573;1 Jul 2026
+Switzerland;9,154,896;30 Jun 2026
+Belarus;9,056,080;1 Jan 2026
+Togo;8,095,498;8 Nov 2022
+Laos;7,745,000;1 Jul 2025
+Libya;7,539,852;1 Jul 2026
+Hong Kong;7,518,300;30 Jun 2026
+Kyrgyzstan;7,404,300;1 Jan 2026
+Turkmenistan;7,057,841;17 Dec 2022
+Nicaragua;6,874,748;30 Jun 2024
+Serbia;6,532,019;1 Jan 2026
+Central African Republic;6,470,307;1 Jul 2024
+Bulgaria;6,423,207;31 Dec 2025
+Republic of the Congo;6,142,180;17 May 2023
+Singapore;6,110,200;30 Jun 2025
+Paraguay;6,109,644;9 Nov 2022
+Denmark;6,032,304;1 Aug 2026
+El Salvador;6,029,976;2 May 2024
+Lebanon;5,895,466;2026
+Finland;5,655,296;31 Jul 2026
+Norway;5,636,904;30 Jun 2026
+Palestine;5,557,096;31 Dec 2025
+Ireland;5,525,600;1 Apr 2026
+Slovakia;5,403,009;30 Jun 2026
+Oman;5,398,645;30 Jun 2026
+New Zealand;5,357,300;30 Jun 2026
+Liberia;5,248,621;10 Nov 2022
+Costa Rica;5,217,296;30 Jun 2026
+Mauritania;4,927,532;25 Dec 2023
+Kuwait;4,881,254;1 Jan 2025
+Panama;4,064,780;1 Jul 2026
+Georgia;3,941,100;1 Jan 2026
+Croatia;3,866,233;1 Jul 2024
+Eritrea;3,682,669;1 Jul 2026
+Mongolia;3,591,120;31 Dec 2025
+Uruguay;3,480,601;30 Jun 2026
+Bosnia and Herzegovina;3,412,000;1 Jul 2024
+Qatar;3,370,611;31 Mar 2026
+Puerto Rico;3,184,835;1 Jul 2025
+Armenia;3,096,900;1 Jan 2025
+Namibia;3,022,401;24 Sep 2023
+Lithuania;2,886,179;1 Jul 2026
+Jamaica;2,774,538;12 Sep 2022
+Gabon;2,469,296;1 Jul 2025
+Gambia;2,422,712;1 May 2024
+Moldova;2,365,600;1 Jan 2026
+Botswana;2,359,609;18 Mar 2022
+Albania;2,335,930;1 Jan 2026
+Slovenia;2,136,385;1 Apr 2026
+Lesotho;2,116,427;2024
+Guinea-Bissau;1,890,252;1 Jul 2026
+Latvia;1,832,100;1 Jul 2026
+North Macedonia;1,819,074;31 Dec 2025
+Equatorial Guinea;1,668,768;1 Jul 2024
+Bahrain;1,603,260;30 Jun 2025
+Kosovo;1,582,322;31 Dec 2025
+Timor-Leste;1,409,452;1 Jul 2026
+Trinidad and Tobago;1,367,764;30 Jun 2025
+Estonia;1,360,745;1 Jan 2026
+Mauritius;1,240,316;30 Jun 2026
+Eswatini;1,235,549;1 Jul 2024
+Djibouti;1,066,809;20 May 2024
+Cyprus;983,000;31 Dec 2024
+Guyana;956,044;31 Dec 2024
+Comoros;944,388;2026
+Fiji;902,623;1 Jan 2026
+Bhutan;790,718;2026
+Solomon Islands;750,325;1 Jul 2024
+Luxembourg;690,959;1 Jan 2026
+Macau;686,500;30 Jun 2026
+Montenegro;622,902;1 Jan 2026
+Suriname;616,500;1 Jul 2021
+Western Sahara;610,813;1 Jul 2026
+Malta;588,254;31 Dec 2025
+Maldives;515,132;13 Sep 2022
+Cape Verde;491,233;16 Jun 2021
+Brunei;458,600;1 Jul 2025
+Belize;418,982;1 Jul 2026
+Bahamas;398,165;4 Apr 2022
+Iceland;396,500;1 Jul 2026
+Vanuatu;321,409;1 Jul 2024
+French Polynesia;279,500;31 Dec 2024
+New Caledonia;264,596;1 Jan 2025
+Barbados;261,692;31 Dec 2025
+São Tomé and Príncipe;209,607;2024
+Samoa;205,557;6 Nov 2021
+Saint Lucia;184,100;1 Jul 2023
+Curaçao;156,115;1 Jan 2025
+Guam;153,836;1 Apr 2020
+Seychelles;123,565;30 Jun 2026
+Kiribati;120,740;1 Jul 2021
+Aruba;110,625;31 Dec 2025
+Saint Vincent and the Grenadines;109,296;15 Jun 2023
+Grenada;109,021;2021
+Jersey;104,540;31 Dec 2024
+Antigua and Barbuda;103,603;1 Jan 2024
+Tonga;100,179;30 Nov 2021
+Andorra;90,021;31 Jul 2026
+Cayman Islands;88,833;31 Dec 2024
+U.S. Virgin Islands;87,146;1 Apr 2020
+Isle of Man;84,975;1 Apr 2025
+Micronesia;75,817;12 Feb 2023
+Dominica;65,514;2026
+Guernsey;64,781;31 Dec 2023
+Bermuda;64,055;1 Jul 2021
+Greenland;56,945;1 Jul 2026
+Faroe Islands;55,726;1 Aug 2026
+Turks and Caicos Islands;52,299;1 Jul 2025
+Saint Kitts and Nevis;51,320;2022
+American Samoa;49,710;1 Apr 2020
+Northern Mariana Islands;47,329;1 Apr 2020
+Marshall Islands;42,418;30 Sep 2021
+Sint Maarten;41,349;1 Jan 2025
+Liechtenstein;41,237;31 Dec 2025
+British Virgin Islands;39,471;1 Jul 2024
+Monaco;38,857;31 Dec 2025
+Gibraltar;38,196;14 Nov 2022
+San Marino;34,167;30 Jun 2026
+Saint Martin;31,496;1 Jan 2025
+Palau;16,733;1 Jul 2021
+Anguilla;16,010;31 Dec 2024
+Cook Islands;15,040;1 Jul 2021
+Nauru;11,680;30 Oct 2021
+Wallis and Futuna;11,620;24 Jul 2023
+Tuvalu;10,643;12 Dec 2022
+Saint Barthélemy;10,562;1 Jan 2025
+Saint Pierre and Miquelon;5,819;1 Jan 2025
+Saint Helena, Ascension and Tristan da Cunha;5,651;1 Jul 2021
+Montserrat;4,386;23 Sep 2023
+Falkland Islands;3,662;10 Oct 2021
+Tokelau;2,608;1 Jan 2025
+Norfolk Island;2,188;1 Jan 2021
+Christmas Island;1,692;1 Jan 2021
+Niue;1,681;11 Nov 2022
+Vatican City;882;31 Dec 2024
+Cocos (Keeling) Islands;593;30 Jun 2020
+Pitcairn Islands;35;2023
